@@ -3,6 +3,7 @@
 #version 130
 
 in vec2 vertexPosition;
+in vec4 vertexColor;
 
 void main() {
 	gl_Position.xy = vertexPosition;

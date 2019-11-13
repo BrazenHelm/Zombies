@@ -1,5 +1,5 @@
 #include "Sprite.h"
-
+#include "Vertex.h"
 
 
 Sprite::Sprite() :
@@ -24,15 +24,22 @@ void Sprite::Init(float x, float y, float width, float height) {
 		glGenBuffers(1, &m_vboID);
 	}
 
-	float vertexData[8];
-	vertexData[0] = x;
-	vertexData[1] = y;
-	vertexData[2] = x + width;
-	vertexData[3] = y;
-	vertexData[4] = x + width;
-	vertexData[5] = y + height;
-	vertexData[6] = x;
-	vertexData[7] = y + height;
+	Vertex vertexData[4];
+	vertexData[0].position.x = x;
+	vertexData[0].position.y = y;
+	vertexData[1].position.x = x + width;
+	vertexData[1].position.y = y;
+	vertexData[2].position.x = x + width;
+	vertexData[2].position.y = y + height;
+	vertexData[3].position.x = x;
+	vertexData[3].position.y = y + height;
+
+	for (int i = 0; i < 4; ++i) {
+		vertexData[i].color.r = 255;
+		vertexData[i].color.g = 20;
+		vertexData[i].color.b = 143;
+		vertexData[i].color.a = 255;
+	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
