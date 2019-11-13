@@ -9,7 +9,8 @@ MainGame::MainGame(int width, int height) :
 	m_pWindow(nullptr),
 	m_screenWidth(width),
 	m_screenHeight(height),
-	m_gameState(GameState::PLAY) {
+	m_gameState(GameState::PLAY),
+	m_time(0) {
 }
 
 
@@ -52,6 +53,7 @@ void MainGame::InitSystems() {
 	InitShaders();
 }
 
+
 void MainGame::InitShaders() {
 	m_colorProgram.CompileShaders("Shaders/vertexShader.txt", "Shaders/fragmentShader.txt");
 	m_colorProgram.AddAttribute("vertexPosition");
@@ -59,11 +61,13 @@ void MainGame::InitShaders() {
 	m_colorProgram.LinkShaders();
 }
 
+
 void MainGame::GameLoop() {
 
 	while (m_gameState != GameState::EXIT) {
 		ProcessInput();
 		DrawGame();
+		m_time += 0.001;
 	}
 }
 
@@ -87,9 +91,13 @@ void MainGame::ProcessInput() {
 
 
 void MainGame::DrawGame() {
+
 	glClearDepth(1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	m_colorProgram.Use();
+
+	GLuint timeLocation = m_colorProgram.GetUniformLocation("time");
+	glUniform1f(timeLocation, m_time);
 
 	testSprite.Draw();
 

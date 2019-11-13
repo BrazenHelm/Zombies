@@ -15,6 +15,7 @@ private:
 	int m_screenHeight;
 
 	GameState m_gameState;
+	float m_time;
 
 	Sprite testSprite;
 

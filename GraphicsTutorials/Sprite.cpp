@@ -66,3 +66,4 @@ void Sprite::Draw() {
 	glDisableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
+
