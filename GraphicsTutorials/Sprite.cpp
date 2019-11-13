@@ -1,6 +1,7 @@
 #include "Sprite.h"
 #include "Vertex.h"
 
+#include <cstddef>
 
 Sprite::Sprite() :
 	m_vboID(0) {
@@ -41,6 +42,13 @@ void Sprite::Init(float x, float y, float width, float height) {
 		vertexData[i].color.a = 255;
 	}
 
+	vertexData[1].color.g = 255;
+	vertexData[1].color.b = 255;
+	vertexData[3].color.r = 0;
+	vertexData[3].color.g = 0;
+	vertexData[3].color.b = 0;
+
+
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -51,7 +59,8 @@ void Sprite::Draw() {
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
+	glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (void*)offsetof(Vertex, color));
 	glDrawArrays(GL_QUADS, 0, 4);
 
 	glDisableVertexAttribArray(0);

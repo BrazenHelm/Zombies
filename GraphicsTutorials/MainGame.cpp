@@ -55,6 +55,7 @@ void MainGame::InitSystems() {
 void MainGame::InitShaders() {
 	m_colorProgram.CompileShaders("Shaders/vertexShader.txt", "Shaders/fragmentShader.txt");
 	m_colorProgram.AddAttribute("vertexPosition");
+	m_colorProgram.AddAttribute("vertexColor");
 	m_colorProgram.LinkShaders();
 }
 
