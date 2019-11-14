@@ -10,7 +10,8 @@ MainGame::MainGame(int width, int height) :
 	m_screenWidth(width),
 	m_screenHeight(height),
 	m_gameState(GameState::PLAY),
-	m_time(0) {
+	m_time(0),
+	m_maxFPS(60) {
 }
 
 
@@ -26,7 +27,7 @@ void MainGame::Run() {
 	testSprites[0]->Init(-1, -1, 1, 1, "Textures/Pixel Adventure 1/Main Characters/Ninja Frog/Jump (32x32).png");
 	testSprites[1]->Init(0, 0, 1, 1, "Textures/Pixel Adventure 1/Main Characters/Ninja Frog/Jump (32x32).png");
 
-	for (int i = 0; i < 10000; ++i) {
+	for (int i = 0; i < 10; ++i) {
 		testSprites.push_back(new Sprite());
 		testSprites.back()->Init(0, 0, 1, 1, "Textures/Pixel Adventure 1/Main Characters/Ninja Frog/Jump (32x32).png");
 	}
@@ -74,9 +75,25 @@ void MainGame::InitShaders() {
 void MainGame::GameLoop() {
 
 	while (m_gameState != GameState::EXIT) {
+
+		float startTicks = SDL_GetTicks();
+
 		ProcessInput();
 		DrawGame();
-		m_time += 0.001f;
+		m_time += 0.01f;
+		CalculateFPS();
+
+		static int frameCounter = 0;
+		if (frameCounter++ == 100) {
+			std::cout << "FPS: " << m_FPS << std::endl;
+			frameCounter = 0;
+		}
+
+		float frameTicks = SDL_GetTicks() - startTicks;
+		
+		if (1000 / m_maxFPS > frameTicks) {
+			SDL_Delay(1000 / m_maxFPS - frameTicks);
+		}
 	}
 }
 
@@ -120,4 +137,33 @@ void MainGame::DrawGame() {
 	m_colorProgram.Unuse();
 	glBindTexture(GL_TEXTURE_2D, 0);
 	SDL_GL_SwapWindow(m_pWindow);
+}
+
+
+void MainGame::CalculateFPS() {
+	static const int N_SAMPLES = 100;
+	static float frameTimes[N_SAMPLES];
+	static int currentFrame = 0;
+
+	static float prevTicks = SDL_GetTicks();
+	float currentTicks = SDL_GetTicks();
+	m_frameTime = currentTicks - prevTicks;
+	prevTicks = currentTicks;
+	frameTimes[currentFrame % N_SAMPLES] = m_frameTime;
+
+	currentFrame++;
+	int count = (currentFrame < N_SAMPLES) ? currentFrame : N_SAMPLES;
+
+	float meanFrameTime = 0;
+	for (int i = 0; i < count; ++i) {
+		meanFrameTime += frameTimes[i];
+	}
+	meanFrameTime /= count;
+
+	if (meanFrameTime == 0) {
+		m_FPS = 0;
+	}
+	else {
+		m_FPS = 1000 / meanFrameTime;
+	}
 }

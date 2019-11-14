@@ -18,7 +18,11 @@ private:
 	int m_screenHeight;
 
 	GameState m_gameState;
+
 	float m_time;
+	float m_frameTime;
+	float m_FPS;
+	float m_maxFPS;
 
 	std::vector<Sprite*> testSprites;
 
@@ -36,5 +40,5 @@ private:
 	void GameLoop();
 	void ProcessInput();
 	void DrawGame();
-
+	void CalculateFPS();
 };
