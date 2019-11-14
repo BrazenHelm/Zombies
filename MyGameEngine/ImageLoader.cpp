@@ -3,6 +3,8 @@
 #include "IOManager.h"
 #include "PicoPNG.h"
 
+namespace MyGameEngine {
+
 GLTexture ImageLoader::LoadPNG(const std::string& path) {
 
 	GLTexture texture;
@@ -35,4 +37,6 @@ GLTexture ImageLoader::LoadPNG(const std::string& path) {
 	texture.height = height;
 
 	return texture;
+}
+
 }

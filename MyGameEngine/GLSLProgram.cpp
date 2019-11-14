@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 
+namespace MyGameEngine {
 
 GLSLProgram::GLSLProgram() :
 	m_programID(0), m_vertexShaderID(0), m_fragmentShaderID(0), m_nAttributes(0) {
@@ -15,7 +16,7 @@ GLSLProgram::~GLSLProgram() {
 }
 
 
-void GLSLProgram::CompileShaders(const std::string& vertexShaderPath, const std::string& fragmentShaderPath) {
+void GLSLProgram::CompileShaders(const std::string& vertexShaderPath, const std::string&fragmentShaderPath) {
 
 	m_programID = glCreateProgram();
 
@@ -134,3 +135,4 @@ void GLSLProgram::Unuse() {
 	}
 }
 
+}

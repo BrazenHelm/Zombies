@@ -2,24 +2,21 @@
 
 #include <GL/glew.h>
 
+namespace MyGameEngine {
+
 struct Vertex {
 
 	struct Position {
-		float x;
-		float y;
+		float x, y;
 	} position;
 
 	struct Color {
-		GLubyte r;
-		GLubyte g;
-		GLubyte b;
-		GLubyte a;
+		GLubyte r, g, b, a;
 	} color;
 
 	// UV texture co-ordinates
 	struct UV {
-		float u;
-		float v;
+		float u, v;
 	} uv;
 
 	void SetPosition(float x, float y) {
@@ -39,3 +36,5 @@ struct Vertex {
 		uv.v = v;
 	}
 };
+
+}

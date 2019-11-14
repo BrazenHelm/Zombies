@@ -3,8 +3,12 @@
 #include <string>
 #include <vector>
 
-class IOManager {
+namespace MyGameEngine {
+
+class IOManager
+{
 public:
 	static bool ReadFile(const std::string& path, std::vector<unsigned char>& buffer);
 };
 
+}

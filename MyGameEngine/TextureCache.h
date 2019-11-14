@@ -5,8 +5,10 @@
 #include <map>
 #include <string>
 
-class TextureCache {
+namespace MyGameEngine {
 
+class TextureCache
+{
 private:
 	std::map<std::string, GLTexture> m_textureMap;
 
@@ -17,3 +19,4 @@ public:
 	GLTexture GetTexture(const std::string& path);
 };
 
+}

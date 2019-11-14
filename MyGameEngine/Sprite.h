@@ -5,7 +5,10 @@
 #include <GL/glew.h>
 #include <string>
 
-class Sprite {
+namespace MyGameEngine {
+
+class Sprite
+{
 private:
 	float m_x;
 	float m_y;
@@ -23,3 +26,4 @@ public:
 	void Draw();
 };
 
+}

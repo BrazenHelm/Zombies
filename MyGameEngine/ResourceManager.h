@@ -2,7 +2,10 @@
 
 #include "TextureCache.h"
 
-class ResourceManager {
+namespace MyGameEngine {
+
+class ResourceManager
+{
 private:
 	static TextureCache m_textureCache;
 
@@ -12,3 +15,4 @@ public:
 
 };
 
+}

@@ -3,6 +3,8 @@
 
 #include <fstream>
 
+namespace MyGameEngine {
+
 bool IOManager::ReadFile(const std::string& path, std::vector<unsigned char>& buffer) {
 
 	std::ifstream file;
@@ -24,3 +26,4 @@ bool IOManager::ReadFile(const std::string& path, std::vector<unsigned char>& bu
 	return true;
 }
 
+}

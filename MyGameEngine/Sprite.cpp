@@ -5,6 +5,8 @@
 
 #include <cstddef>
 
+namespace MyGameEngine {
+
 Sprite::Sprite() :
 	m_vboID(0) {
 }
@@ -17,7 +19,7 @@ Sprite::~Sprite() {
 }
 
 
-void Sprite::Init(float x, float y, float width, float height, const std::string& texturePath) {
+void Sprite::Init(float x, float y, float width, float height, const std::string&texturePath) {
 	m_x = x;
 	m_y = y;
 	m_width = width;
@@ -58,12 +60,13 @@ void Sprite::Draw() {
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex,position));
 	glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (void*)offsetof(Vertex, color));
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uv));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex,uv));
 	glDrawArrays(GL_QUADS, 0, 4);
 
 	glDisableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+}

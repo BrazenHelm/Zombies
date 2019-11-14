@@ -1,5 +1,7 @@
 #include <vector>
 
+namespace MyGameEngine {
+
 /*
 decodePNG: The picoPNG function, decodes a PNG file buffer in memory, into a raw pixel buffer.
 out_image: output parameter, this will contain the raw pixels after decoding.
@@ -532,3 +534,4 @@ int decodePNG(std::vector<unsigned char>& out_image, unsigned long& image_width,
 	return decoder.error;
 }
 
+}

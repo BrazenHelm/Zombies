@@ -4,6 +4,7 @@
 
 #include <iostream>
 
+namespace MyGameEngine {
 
 TextureCache::TextureCache() {
 }
@@ -27,5 +28,7 @@ GLTexture TextureCache::GetTexture(const std::string& path) {
 		std::cout << "Loaded texture from cache" << std::endl;
 		return it->second;
 	}
+
+}
 
 }

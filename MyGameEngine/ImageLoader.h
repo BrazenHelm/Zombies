@@ -4,9 +4,12 @@
 
 #include <string>
 
-class ImageLoader {
+namespace MyGameEngine {
 
+class ImageLoader
+{
 public:
 	static GLTexture LoadPNG(const std::string& path);
 };
 
+}

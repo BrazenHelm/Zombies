@@ -1,12 +1,14 @@
 #include "MainGame.h"
-#include "Errors.h"
+
+#include <MyGameEngine/Errors.h>
+#include <MyGameEngine/MyGameEngine.h>
 
 #include <iostream>
 #include <string>
 
+using namespace MyGameEngine;
 
 MainGame::MainGame(int width, int height) :
-	m_pWindow(nullptr),
 	m_screenWidth(width),
 	m_screenHeight(height),
 	m_gameState(GameState::PLAY),
@@ -38,28 +40,9 @@ void MainGame::Run() {
 
 void MainGame::InitSystems() {
 
-	SDL_Init(SDL_INIT_EVERYTHING);
+	MyGameEngine::Init();
 
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-//	SDL_GL_SetSwapInterval(1);		// VSYNC
-	m_pWindow = SDL_CreateWindow("GameEngine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_screenWidth, m_screenHeight, SDL_WINDOW_OPENGL);
-	if (m_pWindow == nullptr) {
-		FatalError("SDL Window could not be created.");
-	}
-
-	SDL_GLContext glContext = SDL_GL_CreateContext(m_pWindow);
-	if (glContext == nullptr) {
-		FatalError("SDL_GL Context could not be created.");
-	}
-
-	GLenum error = glewInit();
-	if (error != GLEW_OK) {
-		FatalError("GLEW could not be initialised.");
-	}
-
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
-	std::printf("**  OpenGL Version : %s  **\n", glGetString(GL_VERSION));
+	m_window.Create("Game Engine", m_screenWidth, m_screenHeight, 0);
 
 	InitShaders();
 }
@@ -138,7 +121,7 @@ void MainGame::DrawGame() {
 
 	m_colorProgram.Unuse();
 	glBindTexture(GL_TEXTURE_2D, 0);
-	SDL_GL_SwapWindow(m_pWindow);
+	m_window.Swap();
 }
 
 

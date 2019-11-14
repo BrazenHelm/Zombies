@@ -3,7 +3,10 @@
 #include <string>
 #include <GL/glew.h>
 
-class GLSLProgram {
+namespace MyGameEngine {
+
+class GLSLProgram
+{
 private:
 	GLuint m_programID;
 	GLuint m_vertexShaderID;
@@ -15,7 +18,7 @@ public:
 	GLSLProgram();
 	~GLSLProgram();
 
-	void CompileShaders(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
+	void CompileShaders(const std::string& vertexShaderPath, const std::string&fragmentShaderPath);
 	void LinkShaders();
 	void AddAttribute(const std::string& name);
 
@@ -28,3 +31,4 @@ private:
 	void CompileShader(const std::string& shaderPath, GLuint id);
 };
 
+}

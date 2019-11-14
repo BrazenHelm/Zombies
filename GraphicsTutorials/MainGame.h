@@ -1,21 +1,24 @@
 #pragma once
 
-#include "GLSLProgram.h"
-#include "GLTexture.h"
-#include "Sprite.h"
+#include <MyGameEngine/GLSLProgram.h>
+#include <MyGameEngine/GLTexture.h>
+#include <MyGameEngine/Sprite.h>
+#include <MyGameEngine/Window.h>
 
 #include <SDL/SDL.h>
 #include <GL/glew.h>
 
 #include <vector>
 
+using namespace MyGameEngine;
+
 enum class GameState {PLAY, EXIT};
 
 class MainGame {
 private:
-	SDL_Window* m_pWindow;
-	int m_screenWidth;
-	int m_screenHeight;
+	Window	m_window;
+	int		m_screenWidth;
+	int		m_screenHeight;
 
 	GameState m_gameState;
 
