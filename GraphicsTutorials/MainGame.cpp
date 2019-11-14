@@ -4,7 +4,6 @@
 #include <iostream>
 #include <string>
 
-#include "ImageLoader.h"
 
 MainGame::MainGame(int width, int height) :
 	m_pWindow(nullptr),
@@ -22,8 +21,15 @@ MainGame::~MainGame() {
 void MainGame::Run() {
 	InitSystems();
 
-	playerTexture = ImageLoader::LoadPNG("Textures/Pixel Adventure 1/Main Characters/Ninja Frog/Jump (32x32).png");
-	testSprite.Init(-0.5, -0.5, 1, 1);
+	testSprites.push_back(new Sprite());
+	testSprites.push_back(new Sprite());
+	testSprites[0]->Init(-1, -1, 1, 1, "Textures/Pixel Adventure 1/Main Characters/Ninja Frog/Jump (32x32).png");
+	testSprites[1]->Init(0, 0, 1, 1, "Textures/Pixel Adventure 1/Main Characters/Ninja Frog/Jump (32x32).png");
+
+	for (int i = 0; i < 10000; ++i) {
+		testSprites.push_back(new Sprite());
+		testSprites.back()->Init(0, 0, 1, 1, "Textures/Pixel Adventure 1/Main Characters/Ninja Frog/Jump (32x32).png");
+	}
 
 	GameLoop();
 }
@@ -70,7 +76,7 @@ void MainGame::GameLoop() {
 	while (m_gameState != GameState::EXIT) {
 		ProcessInput();
 		DrawGame();
-		m_time += 0.001;
+		m_time += 0.001f;
 	}
 }
 
@@ -85,7 +91,7 @@ void MainGame::ProcessInput() {
 				m_gameState = GameState::EXIT;
 				break;
 			case SDL_MOUSEMOTION:
-				std::cout << event.motion.x << " " << event.motion.y << std::endl;
+				//std::cout << event.motion.x << " " << event.motion.y << std::endl;
 				break;
 		}
 	}
@@ -97,7 +103,6 @@ void MainGame::DrawGame() {
 
 	glClearDepth(1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glBindTexture(GL_TEXTURE_2D, playerTexture.id);
 	m_colorProgram.Use();
 
 
@@ -107,10 +112,12 @@ void MainGame::DrawGame() {
 	GLint textureLocation = m_colorProgram.GetUniformLocation("shaderTexture");
 	glUniform1i(textureLocation, 0);
 
-	testSprite.Draw();
+	for (int i = 0; i < testSprites.size(); ++i) {
+		testSprites[i]->Draw();
+	}
 
 
 	m_colorProgram.Unuse();
-	glBindTexture(GL_TEXTURE_2D, playerTexture.id);
+	glBindTexture(GL_TEXTURE_2D, 0);
 	SDL_GL_SwapWindow(m_pWindow);
 }

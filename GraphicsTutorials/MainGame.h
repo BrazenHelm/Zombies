@@ -4,9 +4,10 @@
 #include "GLTexture.h"
 #include "Sprite.h"
 
-
 #include <SDL/SDL.h>
 #include <GL/glew.h>
+
+#include <vector>
 
 enum class GameState {PLAY, EXIT};
 
@@ -19,8 +20,7 @@ private:
 	GameState m_gameState;
 	float m_time;
 
-	GLTexture playerTexture;
-	Sprite testSprite;
+	std::vector<Sprite*> testSprites;
 
 	GLSLProgram m_colorProgram;
 
