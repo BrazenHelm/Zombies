@@ -40,6 +40,8 @@ void MainGame::InitSystems() {
 
 	SDL_Init(SDL_INIT_EVERYTHING);
 
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+//	SDL_GL_SetSwapInterval(1);		// VSYNC
 	m_pWindow = SDL_CreateWindow("GameEngine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_screenWidth, m_screenHeight, SDL_WINDOW_OPENGL);
 	if (m_pWindow == nullptr) {
 		FatalError("SDL Window could not be created.");
@@ -55,9 +57,9 @@ void MainGame::InitSystems() {
 		FatalError("GLEW could not be initialised.");
 	}
 
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+	std::printf("**  OpenGL Version : %s  **\n", glGetString(GL_VERSION));
 
 	InitShaders();
 }
@@ -84,7 +86,7 @@ void MainGame::GameLoop() {
 		CalculateFPS();
 
 		static int frameCounter = 0;
-		if (frameCounter++ == 100) {
+		if (frameCounter++ == 20) {
 			std::cout << "FPS: " << m_FPS << std::endl;
 			frameCounter = 0;
 		}
