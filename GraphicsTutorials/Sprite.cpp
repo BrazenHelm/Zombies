@@ -26,28 +26,21 @@ void Sprite::Init(float x, float y, float width, float height) {
 	}
 
 	Vertex vertexData[4];
-	vertexData[0].position.x = x;
-	vertexData[0].position.y = y;
-	vertexData[1].position.x = x + width;
-	vertexData[1].position.y = y;
-	vertexData[2].position.x = x + width;
-	vertexData[2].position.y = y + height;
-	vertexData[3].position.x = x;
-	vertexData[3].position.y = y + height;
 
-	for (int i = 0; i < 4; ++i) {
-		vertexData[i].color.r = 255;
-		vertexData[i].color.g = 20;
-		vertexData[i].color.b = 143;
-		vertexData[i].color.a = 255;
-	}
+	vertexData[0].SetPosition(x, y);
+	vertexData[1].SetPosition(x + width, y);
+	vertexData[2].SetPosition(x + width, y + height);
+	vertexData[3].SetPosition(x, y + height);
 
-	vertexData[1].color.g = 255;
-	vertexData[1].color.b = 255;
-	vertexData[3].color.r = 0;
-	vertexData[3].color.g = 0;
-	vertexData[3].color.b = 0;
+	vertexData[0].SetColor(255, 255, 255, 255);
+	vertexData[1].SetColor(255, 20, 143, 255);
+	vertexData[2].SetColor(255, 255, 255, 255);
+	vertexData[3].SetColor(255, 20, 143, 255);
 
+	vertexData[0].SetUV(0, 0);
+	vertexData[1].SetUV(1, 0);
+	vertexData[2].SetUV(1, 1);
+	vertexData[3].SetUV(0, 1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboID);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
@@ -61,6 +54,7 @@ void Sprite::Draw() {
 
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
 	glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (void*)offsetof(Vertex, color));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uv));
 	glDrawArrays(GL_QUADS, 0, 4);
 
 	glDisableVertexAttribArray(0);

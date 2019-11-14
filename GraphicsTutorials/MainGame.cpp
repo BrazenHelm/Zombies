@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 
+#include "ImageLoader.h"
 
 MainGame::MainGame(int width, int height) :
 	m_pWindow(nullptr),
@@ -21,6 +22,7 @@ MainGame::~MainGame() {
 void MainGame::Run() {
 	InitSystems();
 
+	playerTexture = ImageLoader::LoadPNG("Textures/Pixel Adventure 1/Main Characters/Ninja Frog/Jump (32x32).png");
 	testSprite.Init(-0.5, -0.5, 1, 1);
 
 	GameLoop();
@@ -58,6 +60,7 @@ void MainGame::InitShaders() {
 	m_colorProgram.CompileShaders("Shaders/vertexShader.txt", "Shaders/fragmentShader.txt");
 	m_colorProgram.AddAttribute("vertexPosition");
 	m_colorProgram.AddAttribute("vertexColor");
+	m_colorProgram.AddAttribute("vertexUV");
 	m_colorProgram.LinkShaders();
 }
 
@@ -94,13 +97,20 @@ void MainGame::DrawGame() {
 
 	glClearDepth(1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glBindTexture(GL_TEXTURE_2D, playerTexture.id);
 	m_colorProgram.Use();
 
-	GLuint timeLocation = m_colorProgram.GetUniformLocation("time");
+
+	glActiveTexture(GL_TEXTURE0);
+	GLint timeLocation = m_colorProgram.GetUniformLocation("time");
 	glUniform1f(timeLocation, m_time);
+	GLint textureLocation = m_colorProgram.GetUniformLocation("shaderTexture");
+	glUniform1i(textureLocation, 0);
 
 	testSprite.Draw();
 
+
 	m_colorProgram.Unuse();
+	glBindTexture(GL_TEXTURE_2D, playerTexture.id);
 	SDL_GL_SwapWindow(m_pWindow);
 }
