@@ -4,20 +4,23 @@
 
 namespace MyGameEngine {
 
+struct Position {
+	float x, y;
+};
+
+struct Color {
+	GLubyte r, g, b, a;
+};
+
+struct UV {
+	float u, v;
+};
+
 struct Vertex {
 
-	struct Position {
-		float x, y;
-	} position;
-
-	struct Color {
-		GLubyte r, g, b, a;
-	} color;
-
-	// UV texture co-ordinates
-	struct UV {
-		float u, v;
-	} uv;
+	Position position;
+	Color color;
+	UV uv;
 
 	void SetPosition(float x, float y) {
 		position.x = x;
