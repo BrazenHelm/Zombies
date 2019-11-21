@@ -1,5 +1,6 @@
 #pragma once
 
+#include <MyGameEngine/Camera2D.h>
 #include <MyGameEngine/GLSLProgram.h>
 #include <MyGameEngine/GLTexture.h>
 #include <MyGameEngine/Sprite.h>
@@ -16,9 +17,10 @@ enum class GameState {PLAY, EXIT};
 
 class MainGame {
 private:
-	Window	m_window;
-	int		m_screenWidth;
-	int		m_screenHeight;
+	Window		m_window;
+	int			m_screenWidth;
+	int			m_screenHeight;
+	Camera2D	m_camera;
 
 	GameState m_gameState;
 

@@ -14,6 +14,7 @@ MainGame::MainGame(int width, int height) :
 	m_gameState(GameState::PLAY),
 	m_time(0),
 	m_maxFPS(60) {
+	m_camera.Init(width, height);
 }
 
 
@@ -26,13 +27,13 @@ void MainGame::Run() {
 
 	testSprites.push_back(new Sprite());
 	testSprites.push_back(new Sprite());
-	testSprites[0]->Init(-1, -1, 1, 1, "Textures/Pixel Adventure 1/Main Characters/Ninja Frog/Jump (32x32).png");
-	testSprites[1]->Init(0, 0, 1, 1, "Textures/Pixel Adventure 1/Main Characters/Ninja Frog/Jump (32x32).png");
+	testSprites[0]->Init(0, 0, m_screenWidth/2, m_screenWidth / 2, "Textures/Pixel Adventure 1/Main Characters/Ninja Frog/Jump (32x32).png");
+	testSprites[1]->Init(m_screenWidth / 2, 0, m_screenWidth / 2, m_screenWidth / 2, "Textures/Pixel Adventure 1/Main Characters/Ninja Frog/Jump (32x32).png");
 
-	for (int i = 0; i < 10; ++i) {
-		testSprites.push_back(new Sprite());
-		testSprites.back()->Init(0, 0, 1, 1, "Textures/Pixel Adventure 1/Main Characters/Ninja Frog/Jump (32x32).png");
-	}
+	//for (int i = 0; i < 10; ++i) {
+	//	testSprites.push_back(new Sprite());
+	//	testSprites.back()->Init(0, 0, 1, 1, "Textures/Pixel Adventure 1/Main Characters/Ninja Frog/Jump (32x32).png");
+	//}
 
 	GameLoop();
 }
@@ -64,6 +65,9 @@ void MainGame::GameLoop() {
 		float startTicks = SDL_GetTicks();
 
 		ProcessInput();
+
+		m_camera.Update();
+
 		DrawGame();
 		m_time += 0.01f;
 		CalculateFPS();
@@ -86,6 +90,8 @@ void MainGame::GameLoop() {
 void MainGame::ProcessInput() {
 
 	SDL_Event event;
+	const float CAMERA_SPEED = 10;
+	const float SCALE_SPEED = 0.1;
 
 	while (SDL_PollEvent(&event)) {
 		switch (event.type) {
@@ -94,6 +100,28 @@ void MainGame::ProcessInput() {
 				break;
 			case SDL_MOUSEMOTION:
 				//std::cout << event.motion.x << " " << event.motion.y << std::endl;
+				break;
+			case SDL_KEYDOWN:
+				switch (event.key.keysym.sym) {
+					case SDLK_w:
+						m_camera.SetPosition(m_camera.Position() + glm::vec2(0, CAMERA_SPEED));
+						break;
+					case SDLK_a:
+						m_camera.SetPosition(m_camera.Position() + glm::vec2(-CAMERA_SPEED,0));
+						break;
+					case SDLK_s:
+						m_camera.SetPosition(m_camera.Position() + glm::vec2(0, -CAMERA_SPEED));
+						break;
+					case SDLK_d:
+						m_camera.SetPosition(m_camera.Position() + glm::vec2(CAMERA_SPEED,0));
+						break;
+					case SDLK_q:
+						m_camera.SetScale(m_camera.Scale() + SCALE_SPEED);
+						break;
+					case SDLK_e:
+						m_camera.SetScale(m_camera.Scale() - SCALE_SPEED);
+						break;
+				}
 				break;
 		}
 	}
@@ -109,6 +137,9 @@ void MainGame::DrawGame() {
 
 
 	glActiveTexture(GL_TEXTURE0);
+	GLint pLocation = m_colorProgram.GetUniformLocation("P");
+	glm::mat4 cameraMatrix = m_camera.CameraMatrix();
+	glUniformMatrix4fv(pLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
 	GLint timeLocation = m_colorProgram.GetUniformLocation("time");
 	glUniform1f(timeLocation, m_time);
 	GLint textureLocation = m_colorProgram.GetUniformLocation("shaderTexture");
