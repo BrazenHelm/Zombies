@@ -4,12 +4,11 @@
 #include <MyGameEngine/GLSLProgram.h>
 #include <MyGameEngine/GLTexture.h>
 #include <MyGameEngine/Sprite.h>
+#include <MyGameEngine/SpriteBatch.h>
 #include <MyGameEngine/Window.h>
 
 #include <SDL/SDL.h>
 #include <GL/glew.h>
-
-#include <vector>
 
 using namespace MyGameEngine;
 
@@ -29,7 +28,7 @@ private:
 	float m_FPS;
 	float m_maxFPS;
 
-	std::vector<Sprite*> testSprites;
+	SpriteBatch testSpriteBatch;
 
 	GLSLProgram m_colorProgram;
 

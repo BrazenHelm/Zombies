@@ -2,7 +2,7 @@
 
 #include "ImageLoader.h"
 
-#include <iostream>
+//#include <iostream>
 
 namespace MyGameEngine {
 
@@ -21,11 +21,11 @@ GLTexture TextureCache::GetTexture(const std::string& path) {
 	if (it == m_textureMap.end()) {
 		GLTexture newTexture = ImageLoader::LoadPNG(path);
 		m_textureMap.emplace(path, newTexture);
-		std::cout << "Loaded new texture" << std::endl;
+		//std::cout << "Loaded new texture, ID is " << newTexture.id << std::endl;
 		return newTexture;
 	}
 	else {
-		std::cout << "Loaded texture from cache" << std::endl;
+		//std::cout << "Loaded texture from cache, ID is " << it->second.id << std::endl;
 		return it->second;
 	}
 

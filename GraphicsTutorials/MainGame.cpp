@@ -2,6 +2,7 @@
 
 #include <MyGameEngine/Errors.h>
 #include <MyGameEngine/MyGameEngine.h>
+#include <MyGameEngine/ResourceManager.h>
 
 #include <iostream>
 #include <string>
@@ -24,17 +25,6 @@ MainGame::~MainGame() {
 
 void MainGame::Run() {
 	InitSystems();
-
-	testSprites.push_back(new Sprite());
-	testSprites.push_back(new Sprite());
-	testSprites[0]->Init(0, 0, m_screenWidth/2, m_screenWidth / 2, "Textures/Pixel Adventure 1/Main Characters/Ninja Frog/Jump (32x32).png");
-	testSprites[1]->Init(m_screenWidth / 2, 0, m_screenWidth / 2, m_screenWidth / 2, "Textures/Pixel Adventure 1/Main Characters/Ninja Frog/Jump (32x32).png");
-
-	//for (int i = 0; i < 10; ++i) {
-	//	testSprites.push_back(new Sprite());
-	//	testSprites.back()->Init(0, 0, 1, 1, "Textures/Pixel Adventure 1/Main Characters/Ninja Frog/Jump (32x32).png");
-	//}
-
 	GameLoop();
 }
 
@@ -46,6 +36,8 @@ void MainGame::InitSystems() {
 	m_window.Create("Game Engine", m_screenWidth, m_screenHeight, 0);
 
 	InitShaders();
+
+	testSpriteBatch.Init();
 }
 
 
@@ -132,6 +124,7 @@ void MainGame::ProcessInput() {
 void MainGame::DrawGame() {
 
 	glClearDepth(1.0);
+	glClearColor(0, 0, 255, 255);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	m_colorProgram.Use();
 
@@ -145,10 +138,21 @@ void MainGame::DrawGame() {
 	GLint textureLocation = m_colorProgram.GetUniformLocation("shaderTexture");
 	glUniform1i(textureLocation, 0);
 
-	for (int i = 0; i < testSprites.size(); ++i) {
-		testSprites[i]->Draw();
+	testSpriteBatch.Begin();
+
+	glm::vec4 pos{ 0, 0, 50, 50 };
+	glm::vec4 uv{ 0, 0, 1, 1 };
+	static GLTexture texture = ResourceManager::GetTexture("Textures/Pixel Adventure 1/Items/Boxes/Box1/Idle.png");
+	//static GLTexture texture = ResourceManager::GetTexture("Textures/Pixel Adventure 1/Main Characters/Ninja Frog/Jump (32x32).png");
+	Color color;
+	color.r = 255; color.g = 255; color.b = 255; color.a = 255;
+
+	for (int i = 0; i < 1000; ++i) {
+		testSpriteBatch.Draw(pos, uv, texture.id, 0, color);
 	}
 
+	testSpriteBatch.End();
+	testSpriteBatch.Render();
 
 	m_colorProgram.Unuse();
 	glBindTexture(GL_TEXTURE_2D, 0);

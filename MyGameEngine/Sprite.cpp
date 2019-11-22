@@ -38,9 +38,9 @@ void Sprite::Init(float x, float y, float width, float height, const std::string
 	vertexData[3].SetPosition(x, y + height);
 
 	vertexData[0].SetColor(255, 255, 255, 255);
-	vertexData[1].SetColor(255, 20, 143, 255);
+	vertexData[1].SetColor(255, 255, 255, 255);
 	vertexData[2].SetColor(255, 255, 255, 255);
-	vertexData[3].SetColor(255, 20, 143, 255);
+	vertexData[3].SetColor(255, 255, 255, 255);
 
 	vertexData[0].SetUV(0, 0);
 	vertexData[1].SetUV(1, 0);
