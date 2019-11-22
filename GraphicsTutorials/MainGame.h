@@ -3,8 +3,10 @@
 #include <MyGameEngine/Camera2D.h>
 #include <MyGameEngine/GLSLProgram.h>
 #include <MyGameEngine/GLTexture.h>
+#include <MyGameEngine/InputManager.h>
 #include <MyGameEngine/Sprite.h>
 #include <MyGameEngine/SpriteBatch.h>
+#include <MyGameEngine/Time.h>
 #include <MyGameEngine/Window.h>
 
 #include <SDL/SDL.h>
@@ -21,16 +23,13 @@ private:
 	int			m_screenHeight;
 	Camera2D	m_camera;
 
-	GameState m_gameState;
-
-	float m_time;
-	float m_frameTime;
-	float m_FPS;
-	float m_maxFPS;
+	GameState	m_gameState;
 
 	SpriteBatch testSpriteBatch;
 
-	GLSLProgram m_colorProgram;
+	GLSLProgram		m_colorProgram;
+	InputManager	m_inputManager;
+	FPSLimiter		m_fpsLimiter;
 
 public:
 	MainGame(int width, int height);
@@ -44,5 +43,4 @@ private:
 	void GameLoop();
 	void ProcessInput();
 	void DrawGame();
-	void CalculateFPS();
 };

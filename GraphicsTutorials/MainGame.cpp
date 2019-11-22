@@ -3,6 +3,7 @@
 #include <MyGameEngine/Errors.h>
 #include <MyGameEngine/MyGameEngine.h>
 #include <MyGameEngine/ResourceManager.h>
+#include <MyGameEngine/Time.h>
 
 #include <iostream>
 #include <string>
@@ -10,11 +11,9 @@
 using namespace MyGameEngine;
 
 MainGame::MainGame(int width, int height) :
-	m_screenWidth(width),
-	m_screenHeight(height),
-	m_gameState(GameState::PLAY),
-	m_time(0),
-	m_maxFPS(60) {
+	m_screenWidth (width),
+	m_screenHeight (height),
+	m_gameState	(GameState::PLAY) {
 	m_camera.Init(width, height);
 }
 
@@ -30,14 +29,11 @@ void MainGame::Run() {
 
 
 void MainGame::InitSystems() {
-
 	MyGameEngine::Init();
-
 	m_window.Create("Game Engine", m_screenWidth, m_screenHeight, 0);
-
 	InitShaders();
-
 	testSpriteBatch.Init();
+	m_fpsLimiter.Init();
 }
 
 
@@ -54,39 +50,30 @@ void MainGame::GameLoop() {
 
 	while (m_gameState != GameState::EXIT) {
 
-		float startTicks = SDL_GetTicks();
+		m_fpsLimiter.BeginFrame();
 
 		ProcessInput();
-
 		m_camera.Update();
-
 		DrawGame();
-		m_time += 0.01f;
-		CalculateFPS();
 
 		static int frameCounter = 0;
 		if (frameCounter++ == 20) {
-			std::cout << "FPS: " << m_FPS << std::endl;
+			std::cout << "FPS: " << m_fpsLimiter.GetFPS() << std::endl;
 			frameCounter = 0;
 		}
-
-		float frameTicks = SDL_GetTicks() - startTicks;
-		
-		if (1000 / m_maxFPS > frameTicks) {
-			SDL_Delay(1000 / m_maxFPS - frameTicks);
-		}
+		m_fpsLimiter.EndFrame();
 	}
 }
 
 
 void MainGame::ProcessInput() {
 
-	SDL_Event event;
-	const float CAMERA_SPEED = 10;
+	SDL_Event ev;
+	const float CAMERA_SPEED = 3;
 	const float SCALE_SPEED = 0.1;
 
-	while (SDL_PollEvent(&event)) {
-		switch (event.type) {
+	while (SDL_PollEvent(&ev)) {
+		switch (ev.type) {
 			case SDL_QUIT:
 				m_gameState = GameState::EXIT;
 				break;
@@ -94,30 +81,32 @@ void MainGame::ProcessInput() {
 				//std::cout << event.motion.x << " " << event.motion.y << std::endl;
 				break;
 			case SDL_KEYDOWN:
-				switch (event.key.keysym.sym) {
-					case SDLK_w:
-						m_camera.SetPosition(m_camera.Position() + glm::vec2(0, CAMERA_SPEED));
-						break;
-					case SDLK_a:
-						m_camera.SetPosition(m_camera.Position() + glm::vec2(-CAMERA_SPEED,0));
-						break;
-					case SDLK_s:
-						m_camera.SetPosition(m_camera.Position() + glm::vec2(0, -CAMERA_SPEED));
-						break;
-					case SDLK_d:
-						m_camera.SetPosition(m_camera.Position() + glm::vec2(CAMERA_SPEED,0));
-						break;
-					case SDLK_q:
-						m_camera.SetScale(m_camera.Scale() + SCALE_SPEED);
-						break;
-					case SDLK_e:
-						m_camera.SetScale(m_camera.Scale() - SCALE_SPEED);
-						break;
-				}
+				m_inputManager.PressKey(ev.key.keysym.sym);
+				break;
+			case SDL_KEYUP:
+				m_inputManager.ReleaseKey(ev.key.keysym.sym);
 				break;
 		}
 	}
 
+	if (m_inputManager.IsKeyPressed(SDLK_w)) {
+		m_camera.SetPosition(m_camera.Position() + glm::vec2(0, CAMERA_SPEED));
+	}
+	if (m_inputManager.IsKeyPressed(SDLK_a)) {
+		m_camera.SetPosition(m_camera.Position() + glm::vec2(-CAMERA_SPEED, 0));
+	}
+	if (m_inputManager.IsKeyPressed(SDLK_s)) {
+		m_camera.SetPosition(m_camera.Position() + glm::vec2(0, -CAMERA_SPEED));
+	}
+	if (m_inputManager.IsKeyPressed(SDLK_d)) {
+		m_camera.SetPosition(m_camera.Position() + glm::vec2(CAMERA_SPEED, 0));
+	}
+	if (m_inputManager.IsKeyPressed(SDLK_q)) {
+		m_camera.SetScale(m_camera.Scale() + SCALE_SPEED);
+	}
+	if (m_inputManager.IsKeyPressed(SDLK_e)) {
+		m_camera.SetScale(m_camera.Scale() - SCALE_SPEED);
+	}
 }
 
 
@@ -133,8 +122,8 @@ void MainGame::DrawGame() {
 	GLint pLocation = m_colorProgram.GetUniformLocation("P");
 	glm::mat4 cameraMatrix = m_camera.CameraMatrix();
 	glUniformMatrix4fv(pLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
-	GLint timeLocation = m_colorProgram.GetUniformLocation("time");
-	glUniform1f(timeLocation, m_time);
+	//GLint timeLocation = m_colorProgram.GetUniformLocation("time");
+	//glUniform1f(timeLocation, m_time);
 	GLint textureLocation = m_colorProgram.GetUniformLocation("shaderTexture");
 	glUniform1i(textureLocation, 0);
 
@@ -147,9 +136,9 @@ void MainGame::DrawGame() {
 	Color color;
 	color.r = 255; color.g = 255; color.b = 255; color.a = 255;
 
-	for (int i = 0; i < 1000; ++i) {
+	//for (int i = 0; i < 1000; ++i) {
 		testSpriteBatch.Draw(pos, uv, texture.id, 0, color);
-	}
+	//}
 
 	testSpriteBatch.End();
 	testSpriteBatch.Render();
@@ -159,31 +148,3 @@ void MainGame::DrawGame() {
 	m_window.Swap();
 }
 
-
-void MainGame::CalculateFPS() {
-	static const int N_SAMPLES = 100;
-	static float frameTimes[N_SAMPLES];
-	static int currentFrame = 0;
-
-	static float prevTicks = SDL_GetTicks();
-	float currentTicks = SDL_GetTicks();
-	m_frameTime = currentTicks - prevTicks;
-	prevTicks = currentTicks;
-	frameTimes[currentFrame % N_SAMPLES] = m_frameTime;
-
-	currentFrame++;
-	int count = (currentFrame < N_SAMPLES) ? currentFrame : N_SAMPLES;
-
-	float meanFrameTime = 0;
-	for (int i = 0; i < count; ++i) {
-		meanFrameTime += frameTimes[i];
-	}
-	meanFrameTime /= count;
-
-	if (meanFrameTime == 0) {
-		m_FPS = 0;
-	}
-	else {
-		m_FPS = 1000 / meanFrameTime;
-	}
-}
