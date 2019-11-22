@@ -34,4 +34,14 @@ void Camera2D::Update() {
 	}
 }
 
+
+glm::vec2 Camera2D::ScreenToWorldPosition(glm::vec2 screenPosition) {
+	screenPosition -= glm::vec2(m_screenWidth / 2, m_screenHeight / 2);		// centre on (0,0)
+	screenPosition.y *= -1;													// flip y-axis
+	screenPosition += m_position;											// translate
+	screenPosition /= m_scale;												// scale
+	return screenPosition;
+}
+
+
 }

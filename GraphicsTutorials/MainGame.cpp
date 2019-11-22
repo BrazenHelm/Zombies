@@ -57,7 +57,7 @@ void MainGame::GameLoop() {
 		DrawGame();
 
 		static int frameCounter = 0;
-		if (frameCounter++ == 20) {
+		if (frameCounter++ == 2000) {
 			std::cout << "FPS: " << m_fpsLimiter.GetFPS() << std::endl;
 			frameCounter = 0;
 		}
@@ -77,14 +77,20 @@ void MainGame::ProcessInput() {
 			case SDL_QUIT:
 				m_gameState = GameState::EXIT;
 				break;
-			case SDL_MOUSEMOTION:
-				//std::cout << event.motion.x << " " << event.motion.y << std::endl;
-				break;
 			case SDL_KEYDOWN:
 				m_inputManager.PressKey(ev.key.keysym.sym);
 				break;
 			case SDL_KEYUP:
 				m_inputManager.ReleaseKey(ev.key.keysym.sym);
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+				m_inputManager.PressKey(ev.button.button);
+				break;
+			case SDL_MOUSEBUTTONUP:
+				m_inputManager.ReleaseKey(ev.button.button);
+				break;
+			case SDL_MOUSEMOTION:
+				m_inputManager.SetMousePosition(ev.motion.x, ev.motion.y);
 				break;
 		}
 	}
@@ -107,6 +113,10 @@ void MainGame::ProcessInput() {
 	if (m_inputManager.IsKeyPressed(SDLK_e)) {
 		m_camera.SetScale(m_camera.Scale() - SCALE_SPEED);
 	}
+	if (m_inputManager.IsKeyPressed(SDL_BUTTON_LEFT)) {
+		glm::vec2 mousePos = m_camera.ScreenToWorldPosition(m_inputManager.MousePosition());
+		std::cout << mousePos.x << " " << mousePos.y << std::endl;
+	}
 }
 
 
@@ -128,16 +138,16 @@ void MainGame::DrawGame() {
 
 	testSpriteBatch.Begin();
 
-	glm::vec4 pos{ 0, 0, 50, 50 };
+	glm::vec4 pos1{ 0, 0, 50, 50 };
+	glm::vec4 pos2{ 100, 50, 50, 50 };
 	glm::vec4 uv{ 0, 0, 1, 1 };
-	static GLTexture texture = ResourceManager::GetTexture("Textures/Pixel Adventure 1/Items/Boxes/Box1/Idle.png");
-	//static GLTexture texture = ResourceManager::GetTexture("Textures/Pixel Adventure 1/Main Characters/Ninja Frog/Jump (32x32).png");
+	static GLTexture texture1 = ResourceManager::GetTexture("Textures/Pixel Adventure 1/Items/Boxes/Box1/Idle.png");
+	static GLTexture texture2 = ResourceManager::GetTexture("Textures/Pixel Adventure 1/Main Characters/Ninja Frog/Jump (32x32).png");
 	Color color;
 	color.r = 255; color.g = 255; color.b = 255; color.a = 255;
 
-	//for (int i = 0; i < 1000; ++i) {
-		testSpriteBatch.Draw(pos, uv, texture.id, 0, color);
-	//}
+	testSpriteBatch.Draw(pos1, uv, texture1.id, 0, color);
+	testSpriteBatch.Draw(pos2, uv, texture2.id, 0, color);
 
 	testSpriteBatch.End();
 	testSpriteBatch.Render();

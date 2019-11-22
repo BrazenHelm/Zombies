@@ -2,7 +2,8 @@
 
 namespace MyGameEngine {
 
-InputManager::InputManager() {
+InputManager::InputManager() :
+	m_mousePos{ 0.0f, 0.0f } {
 }
 
 
@@ -17,6 +18,12 @@ void InputManager::PressKey(unsigned int keyID) {
 
 void InputManager::ReleaseKey(unsigned int keyID) {
 	m_keyMap[keyID] = false;
+}
+
+
+void InputManager::SetMousePosition(float x, float y) {
+	m_mousePos.x = x;
+	m_mousePos.y = y;
 }
 
 

@@ -6,22 +6,15 @@ namespace MyGameEngine {
 
 class Camera2D
 {
-private:
-	int m_screenWidth, m_screenHeight;
-
-	float		m_scale;
-	glm::vec2	m_position;
-	glm::mat4	m_cameraMatrix;
-	glm::mat4	m_orthoMatrix;
-
-	bool m_needsMatrixUpdate;
-
 public:
 	Camera2D();
 	~Camera2D();
 	
 	void Init(int screenWidth, int screenHeight);
 	void Update();
+
+	glm::vec2 ScreenToWorldPosition(glm::vec2 screenPosition);
+	//glm::vec2 WorldToScreenPosition(glm::vec2 worldPosition);
 
 	void SetScale(float newScale) {
 		m_scale = newScale;
@@ -35,6 +28,16 @@ public:
 	const float Scale()				{ return m_scale; }
 	const glm::vec2 Position()		{ return m_position; }
 	const glm::mat4 CameraMatrix()	{ return m_cameraMatrix; }
+
+private:
+	int m_screenWidth, m_screenHeight;
+
+	float		m_scale;
+	glm::vec2	m_position;
+	glm::mat4	m_cameraMatrix;
+	glm::mat4	m_orthoMatrix;
+
+	bool m_needsMatrixUpdate;
 };
 
 }
