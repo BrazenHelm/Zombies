@@ -54,6 +54,15 @@ void MainGame::GameLoop() {
 
 		ProcessInput();
 		m_camera.Update();
+		for (int i = 0; i < bullets.size();) {
+			if (bullets[i].Update() == true) {
+				bullets[i] = bullets.back();
+				bullets.pop_back();
+			}
+			else {
+				++i;
+			}
+		}
 		DrawGame();
 
 		static int frameCounter = 0;
@@ -116,6 +125,10 @@ void MainGame::ProcessInput() {
 	if (m_inputManager.IsKeyPressed(SDL_BUTTON_LEFT)) {
 		glm::vec2 mousePos = m_camera.ScreenToWorldPosition(m_inputManager.MousePosition());
 		std::cout << mousePos.x << " " << mousePos.y << std::endl;
+
+		glm::vec2 playerPos(0, 0);
+		glm::vec2 direction = glm::normalize(mousePos - playerPos);
+		bullets.emplace_back(120, 5, direction, playerPos);
 	}
 }
 
@@ -148,6 +161,10 @@ void MainGame::DrawGame() {
 
 	testSpriteBatch.Draw(pos1, uv, texture1.id, 0, color);
 	testSpriteBatch.Draw(pos2, uv, texture2.id, 0, color);
+
+	for (Bullet bullet : bullets) {
+		bullet.Draw(testSpriteBatch);
+	}
 
 	testSpriteBatch.End();
 	testSpriteBatch.Render();

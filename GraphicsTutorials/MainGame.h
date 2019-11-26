@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Bullet.h"
+
 #include <MyGameEngine/Camera2D.h>
 #include <MyGameEngine/GLSLProgram.h>
 #include <MyGameEngine/GLTexture.h>
@@ -26,6 +28,8 @@ private:
 	GameState	m_gameState;
 
 	SpriteBatch testSpriteBatch;
+
+	std::vector<Bullet> bullets;
 
 	GLSLProgram		m_colorProgram;
 	InputManager	m_inputManager;
