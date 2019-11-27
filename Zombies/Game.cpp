@@ -58,17 +58,13 @@ void Game::InitShaders() {
 void Game::GameLoop() {
 
 	MyGameEngine::FPSLimiter fpsLimiter;
-	fpsLimiter.Init();
+	fpsLimiter.Init(20);
 
 	while (true) {
 		fpsLimiter.BeginFrame();
 
 		m_mainCamera.Update();
-
-		for (auto pActor : m_pActors) {
-			pActor->Update();
-		}
-
+		UpdateActors();
 		ProcessInput();
 		DrawGame();
 
@@ -104,10 +100,15 @@ void Game::ProcessInput() {
 		}
 	}
 
-	if (m_inputManager.IsKeyPressed(SDL_BUTTON_LEFT)) {
+	static bool clicked = false;
+	if (m_inputManager.IsKeyPressed(SDL_BUTTON_LEFT) && !clicked) {
 		std::cout << "making a zombie" << std::endl;
 		glm::vec2 mousePos = m_mainCamera.ScreenToWorldPosition(m_inputManager.MousePosition());
-		m_pActors.push_back(std::make_shared<Zombie>(mousePos));
+		m_pActors.push_back(new Zombie(mousePos));
+		clicked = true;
+	}
+	if (!m_inputManager.IsKeyPressed(SDL_BUTTON_LEFT)) {
+		clicked = false;
 	}
 }
 
@@ -144,6 +145,36 @@ void Game::CreateActors() {
 
 	for (int i = -3; i <= 3; ++i) {
 		glm::vec2 pos = glm::vec2(i * 100, 0);
-		m_pActors.push_back(std::make_shared<Human>(pos));
+		m_pActors.push_back(new Human(pos));
+	}
+}
+
+
+void Game::UpdateActors() {
+
+	for (auto& pActor : m_pActors) {
+
+		float minDist = 0;
+		Actor* nearestEnemy = new Human();
+		bool foundEnemy = false;
+
+		for (auto pOtherActor : m_pActors) {
+
+			if (pOtherActor->Type() == pActor->Type()) continue;
+
+			float distance = pActor->transform().DistanceTo(pOtherActor->transform());
+			if (!foundEnemy || distance < minDist) {
+				*nearestEnemy = *pOtherActor;
+				minDist = distance;
+				foundEnemy = true;
+			}
+		}
+
+		if (foundEnemy) {
+			pActor->Update(*nearestEnemy);
+			pActor->transform().Update();
+		}
+
+		delete nearestEnemy;
 	}
 }

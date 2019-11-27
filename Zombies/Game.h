@@ -38,12 +38,15 @@ private:
 	// Set up the initial actors
 	void CreateActors();
 
+	// Update the actors
+	void UpdateActors();
+
 	MyGameEngine::Camera2D		m_mainCamera;
 	MyGameEngine::GLSLProgram	m_shaderProgram;
 	MyGameEngine::InputManager	m_inputManager;
 	MyGameEngine::SpriteBatch	m_spriteBatch;
 	MyGameEngine::Window		m_gameWindow;
 
-	std::vector<std::shared_ptr<Actor>>	m_pActors;
+	std::vector<Actor*>	m_pActors;
 };
 

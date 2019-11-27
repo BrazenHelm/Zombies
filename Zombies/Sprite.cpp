@@ -5,12 +5,8 @@
 #include <MyGameEngine/Vertex.h>
 #include <MyGameEngine/ResourceManager.h>
 
-#include "Transform.h"
 
-
-
-Sprite::Sprite(const glm::vec2& position, const glm::vec2& dimensions) :
-	m_rectTransform(position.x, position.y, dimensions.x, dimensions.y),
+Sprite::Sprite() :
 	m_isInit(false) {
 }
 
@@ -19,18 +15,18 @@ Sprite::~Sprite() {
 }
 
 
-void Sprite::Draw(MyGameEngine::SpriteBatch& spriteBatch) {
+void Sprite::Draw(MyGameEngine::SpriteBatch& spriteBatch, glm::vec2 position, glm::vec2 dimensions) {
 
 	if (!m_isInit) {
 		std::cout << "Tried to draw uninitialised sprite." << std::endl;
 		return;
 	}
 
-	glm::vec4 rect = glm::vec4 (
-		m_rectTransform[0] - m_rectTransform[2] / 2,
-		m_rectTransform[1] - m_rectTransform[3] / 2,
-		m_rectTransform[2],
-		m_rectTransform[3]
+	glm::vec4 rect = glm::vec4(
+		position.x - dimensions.x,
+		position.y - dimensions.y,
+		dimensions.x * 2,
+		dimensions.y * 2
 	);
 	glm::vec4 uv = glm::vec4(0, 0, 1, 1);
 

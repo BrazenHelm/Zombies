@@ -5,9 +5,11 @@
 class Human : public Actor
 {
 public:
+	Human();
 	Human(glm::vec2 position);
+	Human(glm::vec2 position, float size);
 	~Human();
 
-	void Update();
+	void Update(Actor& nearestEnemy);
 
 };
