@@ -1,16 +1,22 @@
 #pragma once
 
+#include <MyGameEngine/SpriteBatch.h>
+
+#include "Sprite.h"
 #include "Transform.h"
 
 class Actor
 {
 public:
-	Actor() = default;
+	Actor(glm::vec2 position, float size);
 	~Actor() = default;
 
-	virtual void Update();
+	//virtual void Update() = 0;
 
-private:
-	Transform transform;
+	void Draw(MyGameEngine::SpriteBatch& spriteBatch);
+
+protected:
+	Transform	m_transform;
+	Sprite		m_sprite;
 };
 

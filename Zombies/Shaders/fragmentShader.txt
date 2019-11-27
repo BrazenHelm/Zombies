@@ -1,0 +1,24 @@
+// The fragment shader operates on each pixel in a polygon.
+
+#version 130
+
+in vec2 fragmentPosition;
+in vec4 fragmentColor;
+in vec2 fragmentUV;
+
+out vec4 color;
+
+//uniform float time;
+uniform sampler2D shaderTexture;
+
+void main() {
+
+	vec4 textureColor = texture(shaderTexture, fragmentUV);
+
+//	color = vec4(	fragmentColor.r * (cos(fragmentPosition.x * 4 + time) + 1) / 2,
+//					fragmentColor.g * (cos(fragmentPosition.y * 8 + time) + 1) / 2,
+//					fragmentColor.b * (cos(fragmentPosition.x * 2 + time) + 1) / 2,
+//					fragmentColor.a) * textureColor;
+	
+	color = fragmentColor * textureColor;
+}
