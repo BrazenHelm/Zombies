@@ -20,7 +20,7 @@ Zombie::~Zombie() {
 }
 
 
-void Zombie::Update(Actor& nearestEnemy) {
-	m_transform.MoveTowards(nearestEnemy.transform().Position(), 1);
-}
+//void Zombie::Update(Actor& nearestEnemy) {
+//	m_transform.MoveTowards(nearestEnemy.transform().Position(), 1);
+//}
 

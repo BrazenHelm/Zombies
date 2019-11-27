@@ -10,6 +10,6 @@ public:
 	Human(glm::vec2 position, float size);
 	~Human();
 
-	void Update(Actor& nearestEnemy);
+	//void Update(Actor& nearestEnemy);
 
 };

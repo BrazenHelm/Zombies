@@ -10,7 +10,7 @@ public:
 	Zombie(glm::vec2 position, float size);
 	~Zombie();
 
-	void Update(Actor& nearestEnemy);
+	//void Update(Actor& nearestEnemy);
 
 };
 

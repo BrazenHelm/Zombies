@@ -33,6 +33,27 @@ void Actor::SetType(ActorType newType) {
 }
 
 
+void Actor::Update(Actor& nearestEnemy) {
+
+	switch (m_type) {
+
+		case ActorType::HUMAN:
+			// run away from the nearest zombie
+			m_transform.MoveAwayFrom(nearestEnemy.transform().Position(), 1.5);
+			// if caught by a zombie, turn into a zombie
+			if (m_transform.IsTouching(nearestEnemy.transform())) {
+				SetType(ActorType::ZOMBIE);
+			}
+			break;
+
+		case ActorType::ZOMBIE:
+			// run towards the nearest human
+			m_transform.MoveTowards(nearestEnemy.transform().Position(), 1);
+			break;
+	}
+}
+
+
 void Actor::Draw(MyGameEngine::SpriteBatch& spriteBatch) {
 	glm::vec2 dimensions{ m_transform.Radius(), m_transform.Radius() };
 	m_sprite.Draw(spriteBatch, m_transform.Position(), dimensions);

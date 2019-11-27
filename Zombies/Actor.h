@@ -16,7 +16,7 @@ public:
 	void SetType(ActorType newType);
 
 	// Execute once every frame
-	virtual void Update(Actor& nearestEnemy) = 0;
+	void Update(Actor& nearestEnemy);
 
 	void Draw(MyGameEngine::SpriteBatch& spriteBatch);
 
