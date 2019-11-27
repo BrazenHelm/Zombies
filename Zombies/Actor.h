@@ -11,7 +11,8 @@ public:
 	Actor(glm::vec2 position, float size);
 	~Actor() = default;
 
-	//virtual void Update() = 0;
+	// Executes once every frame
+	virtual void Update() = 0;
 
 	void Draw(MyGameEngine::SpriteBatch& spriteBatch);
 

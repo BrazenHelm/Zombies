@@ -3,11 +3,13 @@
 #include <MyGameEngine/MyGameEngine.h>
 #include <MyGameEngine/GLTexture.h>
 #include <MyGameEngine/ResourceManager.h>
+#include <MyGameEngine/Time.h>
 
 #include <SDL/SDL.h>
 
 #include <iostream>
 
+#include "Human.h"
 #include "Zombie.h"
 
 
@@ -37,7 +39,6 @@ void Game::InitSystems() {
 	m_mainCamera.Init(WIDTH, HEIGHT);
 	m_gameWindow.Create("Zombies", WIDTH, HEIGHT, 0);
 	InitShaders();
-
 	m_spriteBatch.Init();
 
 	CreateActors();	
@@ -56,13 +57,22 @@ void Game::InitShaders() {
 
 void Game::GameLoop() {
 
+	MyGameEngine::FPSLimiter fpsLimiter;
+	fpsLimiter.Init();
+
 	while (true) {
+		fpsLimiter.BeginFrame();
 
 		m_mainCamera.Update();
+
+		for (auto pActor : m_pActors) {
+			pActor->Update();
+		}
 
 		ProcessInput();
 		DrawGame();
 
+		fpsLimiter.EndFrame();
 	}
 
 }
@@ -97,8 +107,7 @@ void Game::ProcessInput() {
 	if (m_inputManager.IsKeyPressed(SDL_BUTTON_LEFT)) {
 		std::cout << "making a zombie" << std::endl;
 		glm::vec2 mousePos = m_mainCamera.ScreenToWorldPosition(m_inputManager.MousePosition());
-		Zombie* zombie = new Zombie(mousePos);
-		m_actors.push_back(zombie);
+		m_pActors.push_back(std::make_shared<Zombie>(mousePos));
 	}
 }
 
@@ -118,8 +127,8 @@ void Game::DrawGame() {
 
 	m_spriteBatch.Begin();
 
-	for (Actor* actor : m_actors) {
-		actor->Draw(m_spriteBatch);
+	for (auto pActor : m_pActors) {
+		pActor->Draw(m_spriteBatch);
 	}
 
 	m_spriteBatch.End();
@@ -135,6 +144,6 @@ void Game::CreateActors() {
 
 	for (int i = -3; i <= 3; ++i) {
 		glm::vec2 pos = glm::vec2(i * 100, 0);
-		m_actors.push_back(new Zombie(pos));
+		m_pActors.push_back(std::make_shared<Human>(pos));
 	}
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <MyGameEngine/Camera2D.h>
 #include <MyGameEngine/InputManager.h>
 #include <MyGameEngine/GLSLProgram.h>
@@ -7,7 +9,6 @@
 #include <MyGameEngine/Window.h>
 
 #include "Actor.h"
-#include "Zombie.h"
 
 class Game
 {
@@ -43,8 +44,6 @@ private:
 	MyGameEngine::SpriteBatch	m_spriteBatch;
 	MyGameEngine::Window		m_gameWindow;
 
-	std::list<Actor*>			m_actors;
-	
-	//Zombie testZombie;
+	std::vector<std::shared_ptr<Actor>>	m_pActors;
 };
 
