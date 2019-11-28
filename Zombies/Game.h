@@ -60,12 +60,12 @@ private:
 	MyGameEngine::SpriteBatch	m_spriteBatch;
 	MyGameEngine::Window		m_gameWindow;
 
-	std::vector<Level*>		m_pLevels;		// data for all the levels in the game
+	std::vector<Level*>			m_pLevels;			// data for all the levels in the game
 
 	// current level variables
-	std::vector<Human*>		m_pHumans;		// vector of all humans in the level; 0th element is m_pPlayer
-	std::vector<Zombie*>	m_pZombies;		// vector of all zombies in the level
-	Player*					m_pPlayer;		// the player; equivalent to m_pHumans[0]
+	std::vector<Human*>			m_pHumans;	// all humans in the level; 0th element is m_pPlayer
+	std::vector<Zombie*>		m_pZombies;	// all zombies in the level
+	Player*						m_pPlayer;	// the player; equivalent to m_pHumans[0]
 
 	// game state variables
 	GameState m_gameState;

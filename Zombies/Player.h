@@ -12,7 +12,8 @@ public:
 	~Player();
 
 	void Start(glm::vec2 position, MyGameEngine::InputManager* pInput);
-	void Update();
+	void Update(std::vector<Human*>& humans, std::vector<Zombie*>& zombies);
+	void DoActorCollision(std::vector<Human*>& humans, std::vector<Zombie*>& zombies);
 
 private:
 	const float PLAYER_MOVE_SPEED = 3.0f;

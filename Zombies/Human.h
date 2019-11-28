@@ -10,7 +10,8 @@ public:
 	virtual ~Human();
 
 	virtual void Start(glm::vec2 position);
-	virtual void Update();
+	virtual void Update(std::vector<Human*>& humans, std::vector<Zombie*>& zombies);
+	virtual void DoActorCollision(std::vector<Human*>& humans, std::vector<Zombie*>& zombies);
 
 private:
 	const float HUMAN_MOVE_SPEED = 2.0f;

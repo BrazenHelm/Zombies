@@ -18,6 +18,7 @@ public:
 	bool IsTouching(const Transform2D& other) const;
 
 	void SetPosition(glm::vec2 target);
+	void SetRelativePosition(glm::vec2 target);
 	void MoveTowards(glm::vec2 target, float speed);
 	void MoveAwayFrom(glm::vec2 target, float speed);
 	void MoveInDirection(glm::vec2 dir, float speed);

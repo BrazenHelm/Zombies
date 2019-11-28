@@ -13,12 +13,13 @@ public:
 
 	void Render();
 
-	glm::vec2				PlayerStart()	const { return m_playerStart; }
-	std::vector<glm::vec2>	ZombieStarts()	const { return m_zombieStarts; }
+	glm::vec2					PlayerStart()	const { return m_playerStart; }
+	std::vector<glm::vec2>		ZombieStarts()	const { return m_zombieStarts; }
+	std::vector<std::string>	LevelData()		const { return m_levelData; }
+
+	static const int TILE_SIZE = 32;
 
 private:
-	const int TILE_SIZE = 32;
-
 	int							m_nHumans;
 	glm::vec2					m_playerStart;
 	std::vector<glm::vec2>		m_zombieStarts;

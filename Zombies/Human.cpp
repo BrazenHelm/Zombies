@@ -25,7 +25,12 @@ void Human::Start(glm::vec2 position) {
 }
 
 
-void Human::Update() {
+void Human::Update(std::vector<Human*>& humans, std::vector<Zombie*>& zombies) {
+
+}
+
+
+void Human::DoActorCollision(std::vector<Human*>& humans, std::vector<Zombie*>& zombies) {
 
 }
 

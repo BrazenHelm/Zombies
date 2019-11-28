@@ -10,7 +10,8 @@ public:
 	~Zombie();
 
 	void Start(glm::vec2 position);
-	void Update();
+	void Update(std::vector<Human*>& humans, std::vector<Zombie*>& zombies);
+	void DoActorCollision(std::vector<Human*>& humans, std::vector<Zombie*>& zombies);
 
 private:
 	const float ZOMBIE_MOVE_SPEED = 1.5f;

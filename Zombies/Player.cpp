@@ -29,7 +29,7 @@ void Player::Start(glm::vec2 position, MyGameEngine::InputManager* pInput) {
 }
 
 
-void Player::Update() {
+void Player::Update(std::vector<Human*>& humans, std::vector<Zombie*>& zombies) {
 	glm::vec2 direction = glm::vec2(0,0);
 	if (m_pInput->IsKeyPressed(SDLK_w)) { direction += glm::vec2( 0, 1); }
 	if (m_pInput->IsKeyPressed(SDLK_a)) { direction += glm::vec2(-1, 0); }
@@ -39,4 +39,9 @@ void Player::Update() {
 		m_transform.MoveInDirection(direction, m_moveSpeed);
 		m_transform.Update();
 	}
+}
+
+
+void Player::DoActorCollision(std::vector<Human*>& humans, std::vector<Zombie*>& zombies) {
+
 }

@@ -87,6 +87,11 @@ void Game::GameLoop() {
 		DrawGame();
 
 		fpsLimiter.EndFrame();
+		static int frameCount;
+		if (frameCount++ == 60) {
+			frameCount = 0;
+			std::cout << "FPS: " << fpsLimiter.GetFPS() << std::endl;
+		}
 	}
 
 }
@@ -101,7 +106,7 @@ void Game::ProcessInput() {
 				m_gameState = GameState::EXIT;
 				break;
 			case SDL_MOUSEMOTION:
-				m_inputManager.SetMousePosition(evnt.motion.x, evnt.motion.y);
+				m_inputManager.SetMousePosition((float)evnt.motion.x, (float)evnt.motion.y);
 				break;
 			case SDL_KEYDOWN:
 				m_inputManager.PressKey(evnt.key.keysym.sym);
@@ -132,8 +137,13 @@ void Game::ProcessInput() {
 
 
 void Game::UpdateActors() {
-	for (auto pHuman : m_pHumans)	{ pHuman->Update(); }
-	for (auto pZombie : m_pZombies) { pZombie->Update(); }
+	// Update humans and zombies
+	for (auto pHuman : m_pHumans)	{ pHuman->Update(m_pHumans, m_pZombies); }
+	for (auto pZombie : m_pZombies) { pZombie->Update(m_pHumans, m_pZombies); }
+
+	// Do level collision for humans and zombies
+	for (auto pHuman : m_pHumans)	{ pHuman->DoLevelCollision(m_pLevels[m_currentLevel]->LevelData()); }
+	for (auto pZombie : m_pZombies) { pZombie->DoLevelCollision(m_pLevels[m_currentLevel]->LevelData()); }
 }
 
 

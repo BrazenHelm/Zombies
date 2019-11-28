@@ -65,7 +65,11 @@ bool Transform2D::IsTouching(const Transform2D& other) const {
 
 void Transform2D::SetPosition(glm::vec2 target) {
 	m_position = target;
-	m_speed = 0;
+}
+
+
+void Transform2D::SetRelativePosition(glm::vec2 target) {
+	SetPosition(m_position + target);
 }
 
 

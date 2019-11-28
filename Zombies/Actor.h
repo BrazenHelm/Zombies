@@ -5,6 +5,9 @@
 #include "Sprite.h"
 #include "Transform.h"
 
+class Human;
+class Zombie;
+
 class Actor
 {
 public:
@@ -12,7 +15,9 @@ public:
 	virtual ~Actor();
 
 	// Execute once every frame
-	virtual void Update() = 0;
+	virtual void Update(std::vector<Human*>& humans, std::vector<Zombie*>& zombies) = 0;
+	virtual void DoActorCollision(std::vector<Human*>& humans, std::vector<Zombie*>& zombies) = 0;
+	void DoLevelCollision(const std::vector<std::string>& levelData);
 
 	void Draw(MyGameEngine::SpriteBatch& spriteBatch);
 
@@ -22,5 +27,8 @@ protected:
 	Transform2D		m_transform;
 	Sprite			m_sprite;
 	float			m_moveSpeed;
+
+private:
+	void CollideWithTile(glm::vec2 tilePos);
 };
 

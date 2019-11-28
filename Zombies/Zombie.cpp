@@ -24,11 +24,11 @@ void Zombie::Start(glm::vec2 position) {
 }
 
 
-void Zombie::Update() {
+void Zombie::Update(std::vector<Human*>& humans, std::vector<Zombie*>& zombies) {
 
 }
 
-//void Zombie::Update(Actor& nearestEnemy) {
-//	m_transform.MoveTowards(nearestEnemy.transform().Position(), 1);
-//}
 
+void Zombie::DoActorCollision(std::vector<Human*>& humans, std::vector<Zombie*>& zombies) {
+
+}
