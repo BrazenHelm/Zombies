@@ -13,18 +13,24 @@
 #include "Zombie.h"
 
 
-Game::Game() {
-	// Empty
+Game::Game() :
+	m_gameState(GameState::PLAY),
+	m_currentLevel(0),
+	m_pPlayer(nullptr) {
 }
 
 
 Game::~Game() {
-	// Empty
+	for (Level* level : m_pLevels) { delete level; }
+	for (Human* human : m_pHumans) { delete human; }
+	for (Zombie* zombie : m_pZombies) { delete zombie; }
+	delete m_pPlayer;
 }
 
 
 void Game::Run() {
 	InitSystems();
+	LoadLevels();
 	GameLoop();
 }
 
@@ -36,12 +42,24 @@ void Game::InitSystems() {
 	const int WIDTH = 800;
 	const int HEIGHT = 600;
 
-	m_mainCamera.Init(WIDTH, HEIGHT);
 	m_gameWindow.Create("Zombies", WIDTH, HEIGHT, 0);
+	m_mainCamera.Init(WIDTH, HEIGHT);
 	InitShaders();
 	m_spriteBatch.Init();
+}
 
-	CreateActors();	
+
+void Game::LoadLevels() {
+	m_pLevels.push_back(new Level("Level Data/Level 1.txt"));
+	SetUpLevel(m_currentLevel);
+}
+
+
+void Game::SetUpLevel(int levelIndex) {
+	// Create player
+	glm::vec2 playerStartPos = m_pLevels[m_currentLevel]->PlayerStart();
+	m_pPlayer = new Player(playerStartPos, &m_inputManager);
+	m_pHumans.push_back(m_pPlayer);
 }
 
 
@@ -58,14 +76,14 @@ void Game::InitShaders() {
 void Game::GameLoop() {
 
 	MyGameEngine::FPSLimiter fpsLimiter;
-	fpsLimiter.Init(20);
+	fpsLimiter.Init();
 
-	while (true) {
+	while (m_gameState != GameState::EXIT) {
 		fpsLimiter.BeginFrame();
 
-		m_mainCamera.Update();
-		UpdateActors();
 		ProcessInput();
+		UpdateActors();
+		UpdateCamera();
 		DrawGame();
 
 		fpsLimiter.EndFrame();
@@ -80,7 +98,7 @@ void Game::ProcessInput() {
 	while (SDL_PollEvent(&evnt)) {
 		switch (evnt.type) {
 			case SDL_QUIT:
-				// quit game
+				m_gameState = GameState::EXIT;
 				break;
 			case SDL_MOUSEMOTION:
 				m_inputManager.SetMousePosition(evnt.motion.x, evnt.motion.y);
@@ -100,16 +118,28 @@ void Game::ProcessInput() {
 		}
 	}
 
-	static bool clicked = false;
+	/*static bool clicked = false;
 	if (m_inputManager.IsKeyPressed(SDL_BUTTON_LEFT) && !clicked) {
 		std::cout << "making a zombie" << std::endl;
 		glm::vec2 mousePos = m_mainCamera.ScreenToWorldPosition(m_inputManager.MousePosition());
-		m_pActors.push_back(new Zombie(mousePos));
+		m_pZombies.push_back(new Zombie(mousePos));
 		clicked = true;
 	}
 	if (!m_inputManager.IsKeyPressed(SDL_BUTTON_LEFT)) {
 		clicked = false;
-	}
+	}*/
+}
+
+
+void Game::UpdateActors() {
+	for (auto pHuman : m_pHumans)	{ pHuman->Update(); }
+	for (auto pZombie : m_pZombies) { pZombie->Update(); }
+}
+
+
+void Game::UpdateCamera() {
+	m_mainCamera.SetPosition(m_pPlayer->Transform().Position());
+	m_mainCamera.Update();
 }
 
 
@@ -117,22 +147,26 @@ void Game::DrawGame() {
 
 	glClearDepth(1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glActiveTexture(GL_TEXTURE0);
 	m_shaderProgram.Use();
 
-	glActiveTexture(GL_TEXTURE0);
 	GLint pLocation = m_shaderProgram.GetUniformLocation("P");
 	glm::mat4 cameraMatrix = m_mainCamera.CameraMatrix();
 	glUniformMatrix4fv(pLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
+
 	GLint textureLocation = m_shaderProgram.GetUniformLocation("shaderTexture");
 	glUniform1i(textureLocation, 0);
 
+	// Render the level
+	m_pLevels[m_currentLevel]->Render();
+
+	// Draw the humans and zombies. Note: player is a human
 	m_spriteBatch.Begin();
-
-	for (auto pActor : m_pActors) {
-		pActor->Draw(m_spriteBatch);
-	}
-
+	for (Human* pHuman : m_pHumans) { pHuman->Draw(m_spriteBatch); }
+	for (Zombie* pZombie : m_pZombies) { pZombie->Draw(m_spriteBatch); }
 	m_spriteBatch.End();
+
+	// Render the humans and zombies
 	m_spriteBatch.Render();
 
 	m_shaderProgram.Unuse();
@@ -141,40 +175,5 @@ void Game::DrawGame() {
 }
 
 
-void Game::CreateActors() {
-
-	for (int i = -3; i <= 3; ++i) {
-		glm::vec2 pos = glm::vec2(i * 100, 0);
-		m_pActors.push_back(new Human(pos));
-	}
-}
 
 
-void Game::UpdateActors() {
-
-	for (auto& pActor : m_pActors) {
-
-		float minDist = 0;
-		Actor* nearestEnemy = new Human();
-		bool foundEnemy = false;
-
-		for (auto pOtherActor : m_pActors) {
-
-			if (pOtherActor->Type() == pActor->Type()) continue;
-
-			float distance = pActor->transform().DistanceTo(pOtherActor->transform());
-			if (!foundEnemy || distance < minDist) {
-				*nearestEnemy = *pOtherActor;
-				minDist = distance;
-				foundEnemy = true;
-			}
-		}
-
-		if (foundEnemy) {
-			pActor->Update(*nearestEnemy);
-			pActor->transform().Update();
-		}
-
-		delete nearestEnemy;
-	}
-}

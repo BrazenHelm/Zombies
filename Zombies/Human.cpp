@@ -2,22 +2,31 @@
 
 #include <iostream>
 
-Human::Human() :
-	Actor(ActorType::HUMAN) {
+Human::Human() {
 }
 
 
-Human::Human(glm::vec2 position) :
-	Actor(ActorType::HUMAN, position) {
-}
-
-
-Human::Human(glm::vec2 position, float size) :
-	Actor(ActorType::HUMAN, position, size) {
+Human::Human(glm::vec2 position) {
+	Start(position);
 }
 
 
 Human::~Human() {
+}
+
+
+void Human::Start(glm::vec2 position) {
+	m_transform.SetPosition(position);
+	m_moveSpeed = HUMAN_MOVE_SPEED;
+
+	MyGameEngine::Color white;
+	white.r = 255;	white.g = 255;	white.b = 255;	white.a = 255;
+	m_sprite.Init(HUMAN_TEXTURE_PATH, white);
+}
+
+
+void Human::Update() {
+
 }
 
 

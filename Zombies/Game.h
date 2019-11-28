@@ -8,7 +8,11 @@
 #include <MyGameEngine/SpriteBatch.h>
 #include <MyGameEngine/Window.h>
 
-#include "Actor.h"
+#include "Level.h"
+#include "Player.h"
+#include "Zombie.h"
+
+enum class GameState { EXIT, PLAY };
 
 class Game
 {
@@ -22,6 +26,12 @@ public:
 private:
 	// Initialise core systems
 	void InitSystems();
+
+	// Load the levels
+	void LoadLevels();
+
+	// Set up the current level
+	void SetUpLevel(int levelIndex);
 	
 	// Initilaise shaders
 	void InitShaders();
@@ -32,14 +42,17 @@ private:
 	// Handle input processing
 	void ProcessInput();
 
+	// Update the actors
+	void UpdateActors();
+
+	// Update the camera to follow the player
+	void UpdateCamera();
+
 	// Render the game
 	void DrawGame();
 
-	// Set up the initial actors
-	void CreateActors();
 
-	// Update the actors
-	void UpdateActors();
+
 
 	MyGameEngine::Camera2D		m_mainCamera;
 	MyGameEngine::GLSLProgram	m_shaderProgram;
@@ -47,6 +60,15 @@ private:
 	MyGameEngine::SpriteBatch	m_spriteBatch;
 	MyGameEngine::Window		m_gameWindow;
 
-	std::vector<Actor*>	m_pActors;
+	std::vector<Level*>		m_pLevels;		// data for all the levels in the game
+
+	// current level variables
+	std::vector<Human*>		m_pHumans;		// vector of all humans in the level; 0th element is m_pPlayer
+	std::vector<Zombie*>	m_pZombies;		// vector of all zombies in the level
+	Player*					m_pPlayer;		// the player; equivalent to m_pHumans[0]
+
+	// game state variables
+	GameState m_gameState;
+	int m_currentLevel;
 };
 

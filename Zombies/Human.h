@@ -7,9 +7,12 @@ class Human : public Actor
 public:
 	Human();
 	Human(glm::vec2 position);
-	Human(glm::vec2 position, float size);
-	~Human();
+	virtual ~Human();
 
-	//void Update(Actor& nearestEnemy);
+	virtual void Start(glm::vec2 position);
+	virtual void Update();
 
+private:
+	const float HUMAN_MOVE_SPEED = 2.0f;
+	const std::string HUMAN_TEXTURE_PATH = "Textures/Pixel Adventure 1/Main Characters/Mask Dude/Jump (32x32).png";
 };
