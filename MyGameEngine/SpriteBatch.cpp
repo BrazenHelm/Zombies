@@ -1,6 +1,7 @@
 #include "SpriteBatch.h"
 
 #include <algorithm>
+#include <iostream>
 
 namespace MyGameEngine {
 
@@ -91,8 +92,7 @@ void SpriteBatch::CreateVertexArray() {
 	glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (void*)offsetof(Vertex, color));
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uv));
 
-	//glBindVertexArray(0);
-
+	glBindVertexArray(0);
 }
 
 
@@ -147,7 +147,7 @@ void SpriteBatch::CreateRenderBatches() {
 
 	for (int glyph_itr = 1; glyph_itr < m_glyphs.size(); ++glyph_itr) {
 		if (m_glyphs[glyph_itr]->texture != m_glyphs[glyph_itr - 1]->texture) {
-			m_renderBatches.emplace_back(cv, 1, m_glyphs[0]->texture);
+			m_renderBatches.emplace_back(cv, VERTICES_PER_GLYPH, m_glyphs[glyph_itr]->texture);
 		}
 		else {
 			m_renderBatches.back().IncrSize(VERTICES_PER_GLYPH);

@@ -7,7 +7,9 @@
 
 #include <SDL/SDL.h>
 
+#include <ctime>
 #include <iostream>
+#include <random>
 
 #include "Human.h"
 #include "Zombie.h"
@@ -21,9 +23,9 @@ Game::Game() :
 
 
 Game::~Game() {
-	for (Level* level : m_pLevels) { delete level; }
-	for (Human* human : m_pHumans) { delete human; }
-	for (Zombie* zombie : m_pZombies) { delete zombie; }
+	for (Level* level : m_pLevels)		{ delete level; }
+	for (Actor* human : m_pHumans)		{ delete human; }
+	for (Actor* zombie : m_pZombies)	{ delete zombie; }
 	delete m_pPlayer;
 }
 
@@ -57,9 +59,26 @@ void Game::LoadLevels() {
 
 void Game::SetUpLevel(int levelIndex) {
 	// Create player
-	glm::vec2 playerStartPos = m_pLevels[m_currentLevel]->PlayerStart();
+	Level* pLevel = m_pLevels[m_currentLevel];
+	glm::vec2 playerStartPos = pLevel->PlayerStart();
 	m_pPlayer = new Player(playerStartPos, &m_inputManager);
 	m_pHumans.push_back(m_pPlayer);
+	
+	int nHumans = pLevel->NHumans();
+	std::mt19937 rng;
+	rng.seed(time(nullptr));
+	std::uniform_int_distribution<int> width(1, pLevel->Width() - 2);
+	std::uniform_int_distribution<int> height(1, pLevel->Height() - 2);
+
+	for (int i = 0; i < nHumans; i++) {
+		glm::vec2 pos = glm::vec2(width(rng) * Level::TILE_SIZE, height(rng) * Level::TILE_SIZE);
+		m_pHumans.push_back(new Human(pos));
+	}
+
+	const std::vector<glm::vec2>& zombieStarts = pLevel->ZombieStarts();
+	for (glm::vec2 pos : zombieStarts) {
+		m_pZombies.push_back(new Zombie(pos));
+	}
 }
 
 
@@ -81,10 +100,12 @@ void Game::GameLoop() {
 	while (m_gameState != GameState::EXIT) {
 		fpsLimiter.BeginFrame();
 
+		DrawGame();
+
 		ProcessInput();
 		UpdateActors();
 		UpdateCamera();
-		DrawGame();
+
 
 		fpsLimiter.EndFrame();
 		static int frameCount;
@@ -106,7 +127,7 @@ void Game::ProcessInput() {
 				m_gameState = GameState::EXIT;
 				break;
 			case SDL_MOUSEMOTION:
-				m_inputManager.SetMousePosition((float)evnt.motion.x, (float)evnt.motion.y);
+				m_inputManager.SetMousePosition(evnt.motion.x, evnt.motion.y);
 				break;
 			case SDL_KEYDOWN:
 				m_inputManager.PressKey(evnt.key.keysym.sym);
@@ -123,7 +144,7 @@ void Game::ProcessInput() {
 		}
 	}
 
-	/*static bool clicked = false;
+	static bool clicked = false;
 	if (m_inputManager.IsKeyPressed(SDL_BUTTON_LEFT) && !clicked) {
 		std::cout << "making a zombie" << std::endl;
 		glm::vec2 mousePos = m_mainCamera.ScreenToWorldPosition(m_inputManager.MousePosition());
@@ -132,7 +153,7 @@ void Game::ProcessInput() {
 	}
 	if (!m_inputManager.IsKeyPressed(SDL_BUTTON_LEFT)) {
 		clicked = false;
-	}*/
+	}
 }
 
 
@@ -141,9 +162,40 @@ void Game::UpdateActors() {
 	for (auto pHuman : m_pHumans)	{ pHuman->Update(m_pHumans, m_pZombies); }
 	for (auto pZombie : m_pZombies) { pZombie->Update(m_pHumans, m_pZombies); }
 
-	// Do level collision for humans and zombies
+	// Do collision for humans and zombies with terrain
 	for (auto pHuman : m_pHumans)	{ pHuman->DoLevelCollision(m_pLevels[m_currentLevel]->LevelData()); }
 	for (auto pZombie : m_pZombies) { pZombie->DoLevelCollision(m_pLevels[m_currentLevel]->LevelData()); }
+
+	// Do collision for humans with humans
+	for (int i = 0; i < m_pHumans.size(); i++) {
+		for (int j = i + 1; j < m_pHumans.size(); j++) {
+			m_pHumans[i]->CollideWith(m_pHumans[j]);
+		}
+	}
+	// Do collision for zombies with zombies
+	for (int i = 0; i < m_pZombies.size(); i++) {
+		for (int j = i + 1; j < m_pZombies.size(); j++) {
+			m_pZombies[i]->CollideWith(m_pZombies[j]);
+		}
+	}
+	// Do collision for zombies with player
+	for (int i = 0; i < m_pZombies.size(); i++) {
+		if (m_pPlayer->CollideWith(m_pZombies[i])) {
+			delete m_pZombies[i];
+			m_pZombies.erase(m_pZombies.begin() + i);
+		}
+	}
+	// Do collision for zombies with other humans
+	for (int i = 0; i < m_pZombies.size(); i++) {
+		for (int j = m_pHumans.size() - 1; j > 0; j--) {
+			if (m_pZombies[i]->CollideWith(m_pHumans[j])) {
+				Zombie* newZombie = new Zombie(m_pHumans[j]->Transform().Position());
+				delete m_pHumans[j];
+				m_pHumans.erase(m_pHumans.begin() + j);
+				m_pZombies.push_back(newZombie);
+			}
+		}
+	}
 }
 
 
@@ -157,7 +209,7 @@ void Game::DrawGame() {
 
 	glClearDepth(1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glActiveTexture(GL_TEXTURE0);
+	//glActiveTexture(GL_TEXTURE0);
 	m_shaderProgram.Use();
 
 	GLint pLocation = m_shaderProgram.GetUniformLocation("P");
@@ -172,15 +224,15 @@ void Game::DrawGame() {
 
 	// Draw the humans and zombies. Note: player is a human
 	m_spriteBatch.Begin();
-	for (Human* pHuman : m_pHumans) { pHuman->Draw(m_spriteBatch); }
-	for (Zombie* pZombie : m_pZombies) { pZombie->Draw(m_spriteBatch); }
+	for (Actor* pHuman : m_pHumans) { pHuman->Draw(m_spriteBatch); }
+	for (Actor* pZombie : m_pZombies) { pZombie->Draw(m_spriteBatch); }
 	m_spriteBatch.End();
 
 	// Render the humans and zombies
 	m_spriteBatch.Render();
 
 	m_shaderProgram.Unuse();
-	glBindTexture(GL_TEXTURE_2D, 0);
+
 	m_gameWindow.Swap();
 }
 

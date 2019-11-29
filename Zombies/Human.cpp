@@ -1,6 +1,6 @@
 #include "Human.h"
 
-#include <iostream>
+#include "Zombie.h"
 
 Human::Human() {
 }
@@ -22,25 +22,27 @@ void Human::Start(glm::vec2 position) {
 	MyGameEngine::Color white;
 	white.r = 255;	white.g = 255;	white.b = 255;	white.a = 255;
 	m_sprite.Init(HUMAN_TEXTURE_PATH, white);
+
+	m_transform.MoveInDirection(glm::normalize(GetRandomDirection()), m_moveSpeed);
 }
 
 
-void Human::Update(std::vector<Human*>& humans, std::vector<Zombie*>& zombies) {
-
+void Human::Update(std::vector<Actor*>& humans, std::vector<Actor*>& zombies) {
+	//Actor* nearest = GetNearest(zombies);
+	//if (nearest != nullptr && m_transform.DistanceTo(nearest->Transform()) < HUMAN_FLEE_DISTANCE) {
+	//	m_transform.MoveAwayFrom(nearest->Transform().Position(), m_moveSpeed);
+	//}
+	//else {
+		static int frameCounter = 0;
+		if (frameCounter++ == 60) {
+			m_transform.MoveInDirection(glm::normalize(GetRandomDirection()), m_moveSpeed);
+			frameCounter = 0;
+		}
+	//}
+	m_transform.Update();
 }
 
 
 void Human::DoActorCollision(std::vector<Human*>& humans, std::vector<Zombie*>& zombies) {
-
+	// not implemented
 }
-
-
-//void Human::Update(Actor& nearestEnemy) {
-//	m_transform.MoveAwayFrom(nearestEnemy.transform().Position(), 1.5);
-//	if (m_transform.IsTouching(nearestEnemy.transform())) {
-//		// turn into a zombie
-//		std::cout << "brainsssss" << std::endl;
-//		SetType(ActorType::ZOMBIE);
-//		// TODO: this does not work! pointer is still of type Human* and so actor still behaves like a human (runs away from enemies)
-//	}
-//}

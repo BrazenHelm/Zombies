@@ -16,9 +16,10 @@ Level::Level(const std::string& filename) {
 		MyGameEngine::FatalError("Could not load level data " + filename);
 	}
 
-	file >> m_nHumans;
-
 	std::string buffer;
+	file >> m_nHumans;
+	std::getline(file, buffer);	// throw away remainder of first line
+
 	while (std::getline(file, buffer)) {
 		m_levelData.push_back(buffer);
 	}

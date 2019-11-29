@@ -4,6 +4,7 @@
 #include "Vertex.h"
 
 #include <cstddef>
+#include <iostream>
 
 namespace MyGameEngine {
 
@@ -67,6 +68,7 @@ void Sprite::Draw() {
 
 	glDisableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 }
