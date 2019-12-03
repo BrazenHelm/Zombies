@@ -38,8 +38,8 @@ Level::Level(const std::string& filename) {
 	MyGameEngine::Color white;
 	white.r = 255;	white.g = 255;	white.b = 255;	white.a = 255;
 
-	for (int y = 0; y < m_levelData.size(); y++) {
-		for (int x = 0; x < m_levelData[y].size(); x++) {
+	for (size_t y = 0; y < m_levelData.size(); y++) {
+		for (size_t x = 0; x < m_levelData[y].size(); x++) {
 
 			char tile = m_levelData[y][x];
 
