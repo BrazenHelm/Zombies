@@ -11,6 +11,7 @@
 #include "Level.h"
 #include "Player.h"
 #include "Zombie.h"
+#include "Bullet.h"
 
 enum class GameState { EXIT, PLAY };
 
@@ -64,8 +65,9 @@ private:
 
 	// current level variables
 	std::vector<Actor*>			m_pHumans;	// all humans in the level; 0th element is m_pPlayer
-	std::vector<Actor*>		m_pZombies;	// all zombies in the level
+	std::vector<Actor*>			m_pZombies;	// all zombies in the level
 	Player*						m_pPlayer;	// the player; equivalent to m_pHumans[0]
+	std::vector<Bullet>			m_bullets;
 
 	// game state variables
 	GameState m_gameState;

@@ -26,6 +26,11 @@ void Actor::DoLevelCollision(const std::vector<std::string>& levelData) {
 	for (glm::vec2 offset : offsets) {
 		glm::vec2 cornerPos = (pos + offset * radius) / tileSize;
 		glm::vec2 intCornerPos = glm::vec2(floor(cornerPos.x), floor(cornerPos.y));
+		if (intCornerPos.x < 0 || intCornerPos.y < 0 || intCornerPos.x >= levelData[0].size() || intCornerPos.y >= levelData.size()) {
+			std::cout << "OUT OF BOUNDS" << std::endl;
+			return;
+		}
+
 		if (levelData[(int)intCornerPos.y][(int)intCornerPos.x] == 'w') {		// only collide with walls
 			tileCollisions.push_back((intCornerPos + glm::vec2(0.5, 0.5)) * tileSize);
 		}
@@ -69,7 +74,7 @@ void Actor::Draw(MyGameEngine::SpriteBatch& spriteBatch) {
 
 glm::vec2 Actor::GetRandomDirection() {
 	static std::mt19937 rng;
-	static std::uniform_real_distribution<float> angle(0.0f, 2 * std::_Pi);
+	static std::uniform_real_distribution<float> angle(0.0f, 2 * (float)std::_Pi);
 	float randomAngle = angle(rng);
 	return glm::vec2(cos(randomAngle), sin(randomAngle));
 }
@@ -106,7 +111,7 @@ Actor* Actor::GetNearest(std::vector<Actor*>& actors) {
 	Actor* nearest = actors[0];
 	float minDistance = m_transform.DistanceTo(actors[0]->Transform());
 
-	for (int i = 1; i < actors.size(); i++) {
+	for (size_t i = 1; i < actors.size(); i++) {
 		float distance = m_transform.DistanceTo(actors[i]->Transform());
 		if (distance < minDistance) {
 			minDistance = distance;

@@ -21,6 +21,7 @@ Zombie::~Zombie() {
 void Zombie::Start(glm::vec2 position) {
 	m_transform.SetPosition(position);
 	m_moveSpeed = ZOMBIE_MOVE_SPEED;
+	m_hp = ZOMBIE_HP;
 
 	MyGameEngine::Color orange;
 	orange.r = 255;	orange.g = 165;	orange.b = 0;	orange.a = 255;
@@ -30,7 +31,10 @@ void Zombie::Start(glm::vec2 position) {
 }
 
 
-void Zombie::Update(std::vector<Actor*>& humans, std::vector<Actor*>& zombies) {
+bool Zombie::Update(std::vector<Actor*>& humans, std::vector<Actor*>& zombies) {
+
+	if (m_hp <= 0) return true;
+
 	Actor* nearest = GetNearest(humans);
 	if (nearest != nullptr && m_transform.DistanceTo(nearest->Transform()) < ZOMBIE_CHASE_DISTANCE) {
 		m_transform.MoveTowards(nearest->Transform().Position(), m_moveSpeed);
@@ -43,6 +47,8 @@ void Zombie::Update(std::vector<Actor*>& humans, std::vector<Actor*>& zombies) {
 		}
 	}
 	m_transform.Update();
+
+	return false;
 }
 
 

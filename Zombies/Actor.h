@@ -2,6 +2,7 @@
 
 #include <MyGameEngine/SpriteBatch.h>
 
+#include <iostream>
 #include <random>
 
 #include "Sprite.h"
@@ -17,12 +18,14 @@ public:
 	virtual ~Actor();
 
 	// Execute once every frame
-	virtual void Update(std::vector<Actor*>& humans, std::vector<Actor*>& zombies) = 0;
+	virtual bool Update(std::vector<Actor*>& humans, std::vector<Actor*>& zombies) = 0;
 
 			void DoLevelCollision(const std::vector<std::string>& levelData);
 			bool CollideWith(Actor* other);
 private:	void CollideWithTile(glm::vec2 tilePos);
 public:		void Draw(MyGameEngine::SpriteBatch& spriteBatch);
+
+			void TakeDamage(int damage) { m_hp -= damage; }
 
 	Transform2D&	Transform() { return m_transform; }
 
@@ -30,6 +33,7 @@ protected:
 	Transform2D		m_transform;
 	Sprite			m_sprite;
 	float			m_moveSpeed;
+	int				m_hp;
 
 	static glm::vec2 GetRandomDirection();
 
