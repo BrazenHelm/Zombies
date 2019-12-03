@@ -14,7 +14,7 @@ public:
 	~Player();
 
 	void Start(glm::vec2 position, MyGameEngine::InputManager* pInput, MyGameEngine::Camera2D* pCamera);
-	bool Update(std::vector<Actor*>& humans, std::vector<Actor*>& zombies, std::vector<Bullet>& bullets);
+	bool Update(std::vector<Actor*>& humans, std::vector<Actor*>& zombies, std::vector<Bullet>& bullets, float deltaTime);
 
 	void AddGun(Gun* pGun);
 
@@ -22,7 +22,7 @@ protected:
 	void DoActorCollision(std::vector<Human*>& humans, std::vector<Zombie*>& zombies);
 
 private:
-	const float PLAYER_MOVE_SPEED = 3.0f;
+	const float PLAYER_MOVE_SPEED = 180.0f;
 	const int PLAYER_HP = 50;
 	const std::string PLAYER_TEXTURE_PATH = "Textures/Pixel Adventure 1/Main Characters/Ninja Frog/Jump (32x32).png";
 

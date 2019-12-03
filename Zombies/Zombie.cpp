@@ -30,7 +30,7 @@ void Zombie::Start(glm::vec2 position) {
 }
 
 
-bool Zombie::Update(std::vector<Actor*>& humans, std::vector<Actor*>& zombies) {
+bool Zombie::Update(std::vector<Actor*>& humans, std::vector<Actor*>& zombies, float deltaTime) {
 
 	if (m_hp <= 0) return true;
 
@@ -45,7 +45,7 @@ bool Zombie::Update(std::vector<Actor*>& humans, std::vector<Actor*>& zombies) {
 			frameCounter = 0;
 		}
 	}
-	m_transform.Update();
+	m_transform.Update(deltaTime);
 
 	return false;
 }

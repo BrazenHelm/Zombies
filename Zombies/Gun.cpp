@@ -6,7 +6,7 @@
 #include <random>
 #include <iostream>
 
-Gun::Gun(std::string name, int rateOfFire, int pellets, float spread, float speed, int damage) :
+Gun::Gun(std::string name, float rateOfFire, int pellets, float spread, float speed, int damage) :
 	m_name(name),
 	m_rateOfFire(rateOfFire),
 	m_pellets(pellets),
@@ -20,9 +20,9 @@ Gun::~Gun() {
 }
 
 
-void Gun::Update(bool mouseHeld, const glm::vec2& pos, glm::vec2& dir, std::vector<Bullet>& bullets) {
-	static int timeSinceFired = 0;
-	timeSinceFired++;
+void Gun::Update(bool mouseHeld, const glm::vec2& pos, glm::vec2& dir, std::vector<Bullet>& bullets, float deltaTime) {
+	static float timeSinceFired = 0;
+	timeSinceFired += deltaTime;
 	if (timeSinceFired > m_rateOfFire && mouseHeld) {
 		Fire(pos, dir, bullets);
 		timeSinceFired = 0;

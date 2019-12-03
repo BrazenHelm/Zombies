@@ -1,7 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
-
+#include <MyGameEngine/Time.h>
 
 class Transform2D
 {
@@ -9,7 +9,7 @@ public:
 	Transform2D(glm::vec2 position = glm::vec2(0,0), float radius = 16);
 	~Transform2D();
 
-	void Update();
+	void Update(float deltaTime);
 
 	void SetPosition(glm::vec2 target);
 	void SetRelativePosition(glm::vec2 target);

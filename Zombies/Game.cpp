@@ -96,18 +96,27 @@ void Game::InitShaders() {
 
 void Game::GameLoop() {
 
-	MyGameEngine::FPSLimiter fpsLimiter;
-	fpsLimiter.Init();	// 60 fps
+	float MAX_FPS = 240.0f;
+
+	MyGameEngine::Time fpsLimiter;
+	fpsLimiter.Init(MAX_FPS);
 
 	while (m_gameState != GameState::EXIT) {
 		fpsLimiter.BeginFrame();
 
-		DrawGame();
-		ProcessInput();
-		UpdateActors();
-		UpdateCamera();
+		// if the FPS is lower than 30, the game will run slower
+		// this avoids bugs due to missed collisions at very low frame rates
+		float deltaTime = fpsLimiter.DeltaTime();
+		static const float MAX_DELTA_TIME = 1.0f / 30.0f;
+		deltaTime = std::min(deltaTime, MAX_DELTA_TIME);
 
+		// TODO: multiple physics steps at high frame rates
+
+		ProcessInput();
+		UpdateActors(deltaTime);
+		UpdateCamera();
 		m_inputManager.Update();
+		DrawGame();
 
 		fpsLimiter.EndFrame();
 		static int frameCount;
@@ -160,22 +169,22 @@ void Game::ProcessInput() {
 }
 
 
-void Game::UpdateActors() {
+void Game::UpdateActors(float deltaTime) {
 	// Update humans and zombies. Returning true means actor has died
-	if (m_pPlayer->Update(m_pHumans, m_pZombies, m_bullets)) {
+	if (m_pPlayer->Update(m_pHumans, m_pZombies, m_bullets, deltaTime)) {
 		std::cout << "You died..." << std::endl;
 		std::cout << "Zombies remaining: " << m_pZombies.size() << std::endl;
 		m_gameState = GameState::EXIT;
 	}
 	for (size_t i = 1; i < m_pHumans.size(); i++) {
-		if (m_pHumans[i]->Update(m_pHumans, m_pZombies)) {
+		if (m_pHumans[i]->Update(m_pHumans, m_pZombies, deltaTime)) {
 			delete m_pHumans[i];
 			m_pHumans[i] = m_pHumans.back();
 			m_pHumans.pop_back();
 		}
 	}
 	for (size_t j = 0; j < m_pZombies.size(); j++) {
-		if (m_pZombies[j]->Update(m_pHumans, m_pZombies)) {
+		if (m_pZombies[j]->Update(m_pHumans, m_pZombies, deltaTime)) {
 			delete m_pZombies[j];
 			m_pZombies[j] = m_pZombies.back();
 			m_pZombies.pop_back();
@@ -225,7 +234,7 @@ void Game::UpdateActors() {
 	}
 
 	// Update bullets
-	for (Bullet& bullet : m_bullets) { bullet.Update(); }
+	for (Bullet& bullet : m_bullets) { bullet.Update(deltaTime); }
 
 	// Do collision for bullets ...
 	for (size_t i = 0; i < m_bullets.size();) {

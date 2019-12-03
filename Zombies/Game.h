@@ -44,7 +44,7 @@ private:
 	void ProcessInput();
 
 	// Update the actors
-	void UpdateActors();
+	void UpdateActors(float deltaTime);
 
 	// Update the camera to follow the player
 	void UpdateCamera();

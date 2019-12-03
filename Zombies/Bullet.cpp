@@ -16,8 +16,8 @@ Bullet::~Bullet() {
 }
 
 
-void Bullet::Update() {
-	m_transform.Update();
+void Bullet::Update(float deltaTime) {
+	m_transform.Update(deltaTime);
 }
 
 

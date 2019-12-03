@@ -33,7 +33,7 @@ private:
 
 	GLSLProgram		m_colorProgram;
 	InputManager	m_inputManager;
-	FPSLimiter		m_fpsLimiter;
+	Time		m_fpsLimiter;
 
 public:
 	MainGame(int width, int height);

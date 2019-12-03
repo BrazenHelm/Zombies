@@ -15,8 +15,8 @@ Transform2D::~Transform2D() {
 }
 
 
-void Transform2D::Update() {
-	m_position += Velocity();
+void Transform2D::Update(float deltaTime) {
+	m_position += Velocity() * deltaTime;
 }
 
 

@@ -14,7 +14,7 @@ public:
 	Bullet(glm::vec2 pos, glm::vec2 dir, int damage, int speed);
 	~Bullet();
 
-	void Update();
+	void Update(float deltaTime);
 	void Draw(MyGameEngine::SpriteBatch& spriteBatch);
 
 	bool CollideWithWorld(const std::vector<std::string>& levelData);

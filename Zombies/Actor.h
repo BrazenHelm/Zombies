@@ -18,7 +18,7 @@ public:
 	virtual ~Actor();
 
 	// Execute once every frame
-	virtual bool Update(std::vector<Actor*>& humans, std::vector<Actor*>& zombies) = 0;
+	virtual bool Update(std::vector<Actor*>& humans, std::vector<Actor*>& zombies, float deltaTime) = 0;
 
 			void DoLevelCollision(const std::vector<std::string>& levelData);
 			bool CollideWith(Actor* other);

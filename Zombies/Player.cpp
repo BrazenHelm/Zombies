@@ -31,13 +31,13 @@ void Player::Start(glm::vec2 position, MyGameEngine::InputManager* pInput, MyGam
 	m_pInput = pInput;
 	m_pCamera = pCamera;
 
-	AddGun(new Gun("Magnum",	 25,  1,  2.5f, 20, 50));
-	AddGun(new Gun("Shotgun",	 45, 10, 15.0f, 20, 15));
-	AddGun(new Gun("MP5",		  5,  1,  5.0f, 20,  8));
+	AddGun(new Gun("Magnum",	 0.42f,  1,  2.5f, 1200.0f, 50));
+	AddGun(new Gun("Shotgun",	 0.75f, 10, 15.0f, 1200.0f, 15));
+	AddGun(new Gun("MP5",		 0.08f,  1,  5.0f, 1200.0f,  8));
 }
 
 
-bool Player::Update(std::vector<Actor*>& humans, std::vector<Actor*>& zombies, std::vector<Bullet>& bullets) {
+bool Player::Update(std::vector<Actor*>& humans, std::vector<Actor*>& zombies, std::vector<Bullet>& bullets, float deltaTime) {
 
 	if (m_hp <= 0) return true;
 
@@ -53,7 +53,7 @@ bool Player::Update(std::vector<Actor*>& humans, std::vector<Actor*>& zombies, s
 	else {
 		m_transform.MoveInDirection(direction, m_moveSpeed);
 	}
-	m_transform.Update();
+	m_transform.Update(deltaTime);
 
 	if (m_pInput->KeyDown(SDLK_1)) { EquipGun(0); }
 	if (m_pInput->KeyDown(SDLK_2)) { EquipGun(1); }
@@ -63,11 +63,11 @@ bool Player::Update(std::vector<Actor*>& humans, std::vector<Actor*>& zombies, s
 		if (m_pInput->KeyHeld(SDL_BUTTON_LEFT)) {
 			glm::vec2 mousePos = m_pCamera->ScreenToWorldPosition(m_pInput->MousePosition());
 			glm::vec2 mouseDir = glm::normalize(mousePos - m_transform.Position());
-			m_pGuns[m_equippedGun]->Update(true, m_transform.Position(), mouseDir, bullets);
+			m_pGuns[m_equippedGun]->Update(true, m_transform.Position(), mouseDir, bullets, deltaTime);
 		}
 		else {
 			glm::vec2 dir = glm::vec2(1, 0);
-			m_pGuns[m_equippedGun]->Update(false, m_transform.Position(), dir, bullets);
+			m_pGuns[m_equippedGun]->Update(false, m_transform.Position(), dir, bullets, deltaTime);
 		}
 	}
 

@@ -9,21 +9,23 @@
 
 namespace MyGameEngine {
 
-FPSLimiter::FPSLimiter() {
+Time::Time() {
 }
 
-FPSLimiter::~FPSLimiter() {
+Time::~Time() {
 }
 
-void FPSLimiter::Init(float maxFPS /* = 60 */) {
+void Time::Init(float maxFPS /* = 60 */) {
 	m_maxFPS = maxFPS;
+	m_startTime = 0;
 }
 
-void FPSLimiter::BeginFrame() {
+void Time::BeginFrame() {
+	m_prevStartTime = m_startTime;
 	m_startTime = SDL_GetTicks();
 }
 
-void FPSLimiter::EndFrame() {
+void Time::EndFrame() {
 	unsigned int frameTime = SDL_GetTicks() - m_startTime;
 
 	if (1000 / m_maxFPS > frameTime) {
@@ -34,7 +36,13 @@ void FPSLimiter::EndFrame() {
 	CalculateFPS(frameTime);
 }
 
-void FPSLimiter::CalculateFPS(unsigned int frameTime) {
+
+float Time::DeltaTime() {
+	return static_cast<float>(m_startTime - m_prevStartTime) / 1000.0f;
+}
+
+
+void Time::CalculateFPS(unsigned int frameTime) {
 
 	static const int N_SAMPLES = 10;
 	static std::vector<unsigned int> frameTimes(N_SAMPLES, 0);
