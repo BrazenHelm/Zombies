@@ -97,7 +97,7 @@ void Game::InitShaders() {
 void Game::GameLoop() {
 
 	MyGameEngine::FPSLimiter fpsLimiter;
-	fpsLimiter.Init(10000);
+	fpsLimiter.Init();	// 60 fps
 
 	while (m_gameState != GameState::EXIT) {
 		fpsLimiter.BeginFrame();
@@ -106,6 +106,8 @@ void Game::GameLoop() {
 		ProcessInput();
 		UpdateActors();
 		UpdateCamera();
+
+		m_inputManager.Update();
 
 		fpsLimiter.EndFrame();
 		static int frameCount;

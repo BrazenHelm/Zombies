@@ -23,8 +23,7 @@ void Zombie::Start(glm::vec2 position) {
 	m_moveSpeed = ZOMBIE_MOVE_SPEED;
 	m_hp = ZOMBIE_HP;
 
-	MyGameEngine::Color orange;
-	orange.r = 255;	orange.g = 165;	orange.b = 0;	orange.a = 255;
+	MyGameEngine::Color orange(255, 165, 0, 255);
 	m_sprite.Init(ZOMBIE_TEXTURE_PATH, orange);
 
 	m_transform.MoveInDirection(glm::normalize(GetRandomDirection()), m_moveSpeed);

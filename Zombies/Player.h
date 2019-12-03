@@ -32,5 +32,7 @@ private:
 	std::vector<Gun*> m_pGuns;
 	int m_equippedGun;
 
+	void EquipGun(size_t index);
+
 };
 

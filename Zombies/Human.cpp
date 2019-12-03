@@ -20,8 +20,7 @@ void Human::Start(glm::vec2 position) {
 	m_moveSpeed = HUMAN_MOVE_SPEED;
 	m_hp = HUMAN_HP;
 
-	MyGameEngine::Color white;
-	white.r = 255;	white.g = 255;	white.b = 255;	white.a = 255;
+	MyGameEngine::Color white(255, 255, 255, 255);
 	m_sprite.Init(HUMAN_TEXTURE_PATH, white);
 
 	m_transform.MoveInDirection(glm::normalize(GetRandomDirection()), m_moveSpeed);

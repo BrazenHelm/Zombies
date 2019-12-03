@@ -35,8 +35,7 @@ Level::Level(const std::string& filename) {
 	m_spriteBatch.Begin();
 
 	glm::vec4 uvRect{ 0, 0, 1, 1 };
-	MyGameEngine::Color white;
-	white.r = 255;	white.g = 255;	white.b = 255;	white.a = 255;
+	MyGameEngine::Color white(255, 255, 255, 255);
 
 	for (size_t y = 0; y < m_levelData.size(); y++) {
 		for (size_t x = 0; x < m_levelData[y].size(); x++) {

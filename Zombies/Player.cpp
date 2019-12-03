@@ -25,8 +25,7 @@ void Player::Start(glm::vec2 position, MyGameEngine::InputManager* pInput, MyGam
 	m_moveSpeed = PLAYER_MOVE_SPEED;
 	m_hp = PLAYER_HP;
 
-	MyGameEngine::Color white;
-	white.r = 255;	white.g = 255;	white.b = 255;	white.a = 255;
+	MyGameEngine::Color white(255, 255, 255, 255);
 	m_sprite.Init(PLAYER_TEXTURE_PATH, white);
 
 	m_pInput = pInput;
@@ -43,10 +42,10 @@ bool Player::Update(std::vector<Actor*>& humans, std::vector<Actor*>& zombies, s
 	if (m_hp <= 0) return true;
 
 	glm::vec2 direction = glm::vec2(0,0);
-	if (m_pInput->IsKeyPressed(SDLK_w)) { direction += glm::vec2( 0, 1); }
-	if (m_pInput->IsKeyPressed(SDLK_a)) { direction += glm::vec2(-1, 0); }
-	if (m_pInput->IsKeyPressed(SDLK_s)) { direction += glm::vec2( 0,-1); }
-	if (m_pInput->IsKeyPressed(SDLK_d)) { direction += glm::vec2( 1, 0); }
+	if (m_pInput->KeyHeld(SDLK_w)) { direction += glm::vec2( 0, 1); }
+	if (m_pInput->KeyHeld(SDLK_a)) { direction += glm::vec2(-1, 0); }
+	if (m_pInput->KeyHeld(SDLK_s)) { direction += glm::vec2( 0,-1); }
+	if (m_pInput->KeyHeld(SDLK_d)) { direction += glm::vec2( 1, 0); }
 
 	if (direction == glm::vec2(0, 0)) {
 		m_transform.Stop();
@@ -56,31 +55,12 @@ bool Player::Update(std::vector<Actor*>& humans, std::vector<Actor*>& zombies, s
 	}
 	m_transform.Update();
 
-	static bool keyDown1 = false;
-	static bool keyDown2 = false;
-	static bool keyDown3 = false;
-
-	if (m_pInput->IsKeyPressed(SDLK_1) && m_pGuns.size() >= 1 && !keyDown1) {
-		m_equippedGun = 0;
-		std::cout << "Equipped " << m_pGuns[0]->Name() << std::endl;
-		keyDown1 = true;
-	}
-	if (m_pInput->IsKeyPressed(SDLK_2) && m_pGuns.size() >= 2 && !keyDown2) {
-		m_equippedGun = 1;
-		std::cout << "Equipped " << m_pGuns[1]->Name() << std::endl;
-		keyDown2 = true;
-	}
-	if (m_pInput->IsKeyPressed(SDLK_3) && m_pGuns.size() >= 3 && !keyDown3) {
-		m_equippedGun = 2;
-		std::cout << "Equipped " << m_pGuns[2]->Name() << std::endl;
-		keyDown3 = true;
-	}
-	if (!m_pInput->IsKeyPressed(SDLK_1)) keyDown1 = false;
-	if (!m_pInput->IsKeyPressed(SDLK_2)) keyDown2 = false;
-	if (!m_pInput->IsKeyPressed(SDLK_3)) keyDown3 = false;
+	if (m_pInput->KeyDown(SDLK_1)) { EquipGun(0); }
+	if (m_pInput->KeyDown(SDLK_2)) { EquipGun(1); }
+	if (m_pInput->KeyDown(SDLK_3)) { EquipGun(2); }
 
 	if (m_equippedGun != -1) {
-		if (m_pInput->IsKeyPressed(SDL_BUTTON_LEFT)) {
+		if (m_pInput->KeyHeld(SDL_BUTTON_LEFT)) {
 			glm::vec2 mousePos = m_pCamera->ScreenToWorldPosition(m_pInput->MousePosition());
 			glm::vec2 mouseDir = glm::normalize(mousePos - m_transform.Position());
 			m_pGuns[m_equippedGun]->Update(true, m_transform.Position(), mouseDir, bullets);
@@ -103,4 +83,11 @@ void Player::AddGun(Gun* pGun) {
 
 void Player::DoActorCollision(std::vector<Human*>& humans, std::vector<Zombie*>& zombies) {
 	// not implemented
+}
+
+
+void Player::EquipGun(size_t index) {
+	if (m_pGuns.size() <= index) return;
+	m_equippedGun = index;
+	std::cout << "Equipped " << m_pGuns[index]->Name() << std::endl;
 }

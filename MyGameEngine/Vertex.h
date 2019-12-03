@@ -10,6 +10,11 @@ struct Position {
 
 struct Color {
 	GLubyte r, g, b, a;
+
+	Color() : r(0), g(0), b(0), a(255) { }
+	Color(GLubyte r, GLubyte g, GLubyte b, GLubyte a) :
+		r(r), g(g), b(b), a(a) {
+	}
 };
 
 struct UV {
