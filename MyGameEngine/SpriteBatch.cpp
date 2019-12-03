@@ -5,6 +5,27 @@
 
 namespace MyGameEngine {
 
+Glyph::Glyph(const glm::vec4& rect, const glm::vec4& uv, GLuint texture, float depth, const Color& color) :
+	texture(texture), depth(depth)
+{
+	v00.SetPosition(rect[0], rect[1]);
+	v00.color = color;
+	v00.SetUV(uv[0], uv[1]);
+
+	v01.SetPosition(rect[0], rect[1] + rect[3]);
+	v01.color = color;
+	v01.SetUV(uv[0], uv[1] + uv[3]);
+
+	v10.SetPosition(rect[0] + rect[2], rect[1]);
+	v10.color = color;
+	v10.SetUV(uv[0] + uv[2], uv[1]);
+
+	v11.SetPosition(rect[0] + rect[2], rect[1] + rect[3]);
+	v11.color = color;
+	v11.SetUV(uv[0] + uv[2], uv[1] + uv[3]);
+}
+
+
 SpriteBatch::SpriteBatch() :
 	m_vboID(0), m_vaoID(0) {
 }
@@ -21,44 +42,25 @@ void SpriteBatch::Init() {
 
 void SpriteBatch::Begin(GlyphSortType sortType /*= GlyphSortType::TEXTURE*/) {
 	m_sortType = sortType;
-	for (Glyph* glyph : m_glyphs) {
-		delete glyph;
-	}
+	//for (Glyph* pGlyph : m_pGlyphs) {
+	//	delete pGlyph;
+	//}
+	//m_pGlyphs.clear();
 	m_glyphs.clear();
 	m_renderBatches.clear();
 }
 
 
 void SpriteBatch::End() {
+	m_pGlyphs.resize(m_glyphs.size());
+	for (size_t i = 0; i < m_glyphs.size(); i++) { m_pGlyphs[i] = &m_glyphs[i]; }
 	SortGlyphs();
 	CreateRenderBatches();
 }
 
 
-void SpriteBatch::Draw(const glm::vec4& destRect, const glm::vec4& uvRect, GLuint texture, float depth, const Color& color) {
-	
-	Glyph* newGlyph = new Glyph;
-
-	newGlyph->texture = texture;
-	newGlyph->depth = depth;
-
-	newGlyph->v00.SetPosition(destRect[0], destRect[1]);
-	newGlyph->v00.color = color;
-	newGlyph->v00.SetUV(uvRect[0], uvRect[1]);
-
-	newGlyph->v01.SetPosition(destRect[0], destRect[1] + destRect[3]);
-	newGlyph->v01.color = color;
-	newGlyph->v01.SetUV(uvRect[0], uvRect[1] + uvRect[3]);
-
-	newGlyph->v10.SetPosition(destRect[0] + destRect[2], destRect[1]);
-	newGlyph->v10.color = color;
-	newGlyph->v10.SetUV(uvRect[0] + uvRect[2], uvRect[1]);
-
-	newGlyph->v11.SetPosition(destRect[0] + destRect[2], destRect[1] + destRect[3]);
-	newGlyph->v11.color = color;
-	newGlyph->v11.SetUV(uvRect[0] + uvRect[2], uvRect[1] + uvRect[3]);
-
-	m_glyphs.push_back(newGlyph);
+void SpriteBatch::Draw(const glm::vec4& rect, const glm::vec4& uv, GLuint texture, float depth, const Color& color) {
+	m_glyphs.emplace_back(rect, uv, texture, depth, color);
 }
 
 
@@ -99,13 +101,13 @@ void SpriteBatch::CreateVertexArray() {
 void SpriteBatch::SortGlyphs() {
 	switch (m_sortType) {
 		case GlyphSortType::BACK_TO_FRONT:
-			std::stable_sort(m_glyphs.begin(), m_glyphs.end(), CompareBackToFront);
+			std::stable_sort(m_pGlyphs.begin(), m_pGlyphs.end(), CompareBackToFront);
 			break;
 		case GlyphSortType::FRONT_TO_BACK:
-			std::stable_sort(m_glyphs.begin(), m_glyphs.end(), CompareFrontToBack);
+			std::stable_sort(m_pGlyphs.begin(), m_pGlyphs.end(), CompareFrontToBack);
 			break;
 		case GlyphSortType::TEXTURE:
-			std::stable_sort(m_glyphs.begin(), m_glyphs.end(), CompareTexture);
+			std::stable_sort(m_pGlyphs.begin(), m_pGlyphs.end(), CompareTexture);
 			break;
 		default:
 			break;
@@ -130,32 +132,32 @@ bool SpriteBatch::CompareTexture(Glyph* a, Glyph* b) {
 
 void SpriteBatch::CreateRenderBatches() {
 
-	if (m_glyphs.empty()) return;
+	if (m_pGlyphs.empty()) return;
 
 	const int VERTICES_PER_GLYPH = 4;
 
 	std::vector<Vertex> vertices;
-	vertices.resize(m_glyphs.size() * VERTICES_PER_GLYPH);
+	vertices.resize(m_pGlyphs.size() * VERTICES_PER_GLYPH);
 
 	int cv = 0; // current vertex
 
-	m_renderBatches.emplace_back(cv, VERTICES_PER_GLYPH, m_glyphs[0]->texture);
-	vertices[cv++] = m_glyphs[0]->v00;
-	vertices[cv++] = m_glyphs[0]->v10;
-	vertices[cv++] = m_glyphs[0]->v11;
-	vertices[cv++] = m_glyphs[0]->v01;
+	m_renderBatches.emplace_back(cv, VERTICES_PER_GLYPH, m_pGlyphs[0]->texture);
+	vertices[cv++] = m_pGlyphs[0]->v00;
+	vertices[cv++] = m_pGlyphs[0]->v10;
+	vertices[cv++] = m_pGlyphs[0]->v11;
+	vertices[cv++] = m_pGlyphs[0]->v01;
 
-	for (int glyph_itr = 1; glyph_itr < m_glyphs.size(); ++glyph_itr) {
-		if (m_glyphs[glyph_itr]->texture != m_glyphs[glyph_itr - 1]->texture) {
-			m_renderBatches.emplace_back(cv, VERTICES_PER_GLYPH, m_glyphs[glyph_itr]->texture);
+	for (size_t glyph_itr = 1; glyph_itr < m_pGlyphs.size(); ++glyph_itr) {
+		if (m_pGlyphs[glyph_itr]->texture != m_pGlyphs[glyph_itr - 1]->texture) {
+			m_renderBatches.emplace_back(cv, VERTICES_PER_GLYPH, m_pGlyphs[glyph_itr]->texture);
 		}
 		else {
 			m_renderBatches.back().IncrSize(VERTICES_PER_GLYPH);
 		}
-		vertices[cv++] = m_glyphs[glyph_itr]->v00;
-		vertices[cv++] = m_glyphs[glyph_itr]->v10;
-		vertices[cv++] = m_glyphs[glyph_itr]->v11;
-		vertices[cv++] = m_glyphs[glyph_itr]->v01;
+		vertices[cv++] = m_pGlyphs[glyph_itr]->v00;
+		vertices[cv++] = m_pGlyphs[glyph_itr]->v10;
+		vertices[cv++] = m_pGlyphs[glyph_itr]->v11;
+		vertices[cv++] = m_pGlyphs[glyph_itr]->v01;
 	}
 
 	// bind the buffer
@@ -164,7 +166,6 @@ void SpriteBatch::CreateRenderBatches() {
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW);
 	// upload the data
 	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex), vertices.data());
-
 	// unbind the buffer
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }

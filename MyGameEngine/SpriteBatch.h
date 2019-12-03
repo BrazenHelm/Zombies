@@ -16,7 +16,9 @@ enum class GlyphSortType {
 };
 
 
-struct Glyph {
+class Glyph
+{
+public:
 	GLuint texture;
 	float depth;
 
@@ -24,6 +26,9 @@ struct Glyph {
 	Vertex v01;
 	Vertex v10;
 	Vertex v11;
+
+	Glyph() { }
+	Glyph(const glm::vec4& rect, const glm::vec4& uv, GLuint texture, float depth, const Color& color);
 };
 
 
@@ -53,7 +58,8 @@ private:
 	GLuint m_vboID;
 	GLuint m_vaoID;
 
-	std::vector<Glyph*> m_glyphs;
+	std::vector<Glyph*> m_pGlyphs;	//< used only for sorting
+	std::vector<Glyph> m_glyphs;
 	GlyphSortType m_sortType;
 
 	std::vector<RenderBatch> m_renderBatches;
