@@ -14,7 +14,7 @@ public:
 	void Update();
 
 	glm::vec2 ScreenToWorldPosition(glm::vec2 screenPosition);
-	//glm::vec2 WorldToScreenPosition(glm::vec2 worldPosition);
+	bool IsInView(const glm::vec4& rect);
 
 	void SetScale(float newScale) {
 		m_scale = newScale;
@@ -25,9 +25,12 @@ public:
 		m_needsMatrixUpdate = true;
 	}
 
+
 	const float Scale()				{ return m_scale; }
 	const glm::vec2 Position()		{ return m_position; }
 	const glm::mat4 CameraMatrix()	{ return m_cameraMatrix; }
+
+
 
 private:
 	int m_screenWidth, m_screenHeight;

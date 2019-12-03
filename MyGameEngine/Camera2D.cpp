@@ -44,4 +44,22 @@ glm::vec2 Camera2D::ScreenToWorldPosition(glm::vec2 screenPosition) {
 }
 
 
+bool Camera2D::IsInView(const glm::vec4& rect) {
+
+	float camLeft = m_position.x - (m_screenWidth / m_scale / 2);
+	if (rect[0] + (rect[2] / 2) < camLeft) return false;
+
+	float camRight = m_position.x + (m_screenWidth / m_scale / 2);
+	if (rect[0] - (rect[2] / 2) > camRight) return false;
+
+	float camBottom = m_position.y - (m_screenHeight / m_scale / 2);
+	if (rect[1] + (rect[3] / 2) < camBottom) return false;
+
+	float camTop = m_position.y + (m_screenHeight / m_scale / 2);
+	if (rect[1] - (rect[3] / 2) > camTop) return false;
+
+	return true;
+}
+
+
 }

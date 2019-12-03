@@ -20,11 +20,13 @@ public:
 
 	// Getters
 	float DistanceTo(const Transform2D& other) const;
-	glm::vec2 Position()	const	{ return m_position; }
-	glm::vec2 Direction()	const	{ return m_direction; }
-	glm::vec2 Velocity()	const	{ return m_direction * m_speed; }
-	float Speed()			const	{ return m_speed; }
-	float Radius()			const	{ return m_radius; }
+	glm::vec2 Position()	const { return m_position; }
+	glm::vec2 Direction()	const { return m_direction; }
+	glm::vec2 Velocity()	const { return m_direction * m_speed; }
+	float Speed()			const { return m_speed; }
+	float Radius()			const { return m_radius; }
+	glm::vec2 Dimensions()	const { return 2.0f * glm::vec2(m_radius, m_radius); }
+	glm::vec4 Rect()		const { return glm::vec4(m_position.x, m_position.y, m_radius * 2, m_radius * 2); }
 
 private:
 	glm::vec2		m_position;

@@ -20,12 +20,14 @@ public:
 	bool CollideWithWorld(const std::vector<std::string>& levelData);
 	bool CollideWith(Actor* actor);
 
+	Transform2D& Transform() { return m_transform; }
+
 private:
 	Transform2D m_transform;
 	Sprite		m_sprite;
 	int m_damage;
 
 	std::string BULLET_TEXTURE_PATH = "Textures/Pixel Adventure 1/Other/Dust Particle.png";
-	int BULLET_SIZE = 8;
+	int BULLET_SIZE = 12;
 };
 

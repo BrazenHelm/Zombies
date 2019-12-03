@@ -172,8 +172,9 @@ void Game::ProcessInput() {
 void Game::UpdateActors(float deltaTime) {
 	// Update humans and zombies. Returning true means actor has died
 	if (m_pPlayer->Update(m_pHumans, m_pZombies, m_bullets, deltaTime)) {
-		std::cout << "You died..." << std::endl;
-		std::cout << "Zombies remaining: " << m_pZombies.size() << std::endl;
+		std::printf("*** You died... ***\n");
+		std::printf("Zombies killed: %d\n", m_nZombiesKilled);
+		std::printf("Civilians killed: %d\n", m_nCivsKilled);
 		m_gameState = GameState::EXIT;
 	}
 	for (size_t i = 1; i < m_pHumans.size(); i++) {
@@ -181,6 +182,7 @@ void Game::UpdateActors(float deltaTime) {
 			delete m_pHumans[i];
 			m_pHumans[i] = m_pHumans.back();
 			m_pHumans.pop_back();
+			m_nCivsKilled++;
 		}
 	}
 	for (size_t j = 0; j < m_pZombies.size(); j++) {
@@ -188,9 +190,12 @@ void Game::UpdateActors(float deltaTime) {
 			delete m_pZombies[j];
 			m_pZombies[j] = m_pZombies.back();
 			m_pZombies.pop_back();
+			m_nZombiesKilled++;
 			if (m_pZombies.size() == 0) {
-				std::cout << "All zombies defeated!" << std::endl;
-				std::cout << "Civilians saved: " << m_pHumans.size() - 1 << std::endl;
+				std::printf("*** All zombies defeated! ***\n");
+				std::printf("Zombies killed: %d\n", m_nZombiesKilled);
+				std::printf("Civilians killed: %d\n", m_nCivsKilled);
+				std::printf("Civilians saved: %d/%d\n", m_pHumans.size() - 1, m_pLevels[m_currentLevel]->NHumans());
 				m_gameState = GameState::EXIT;
 			}
 		}
@@ -301,12 +306,23 @@ void Game::DrawGame() {
 
 	// Draw humans, zombies and bullets
 	m_spriteBatch.Begin();
-	for (Actor* pHuman : m_pHumans)		{ pHuman->Draw(m_spriteBatch); }
-	for (Actor* pZombie : m_pZombies)	{ pZombie->Draw(m_spriteBatch); }
-	for (Bullet bullet : m_bullets)		{ bullet.Draw(m_spriteBatch); }
+
+	for (Actor* pHuman : m_pHumans) {
+		if (m_mainCamera.IsInView(pHuman->Transform().Rect()))
+			pHuman->Draw(m_spriteBatch);
+	}
+	for (Actor* pZombie : m_pZombies) {
+		if (m_mainCamera.IsInView(pZombie->Transform().Rect()))
+			pZombie->Draw(m_spriteBatch);
+	}
+	for (Bullet bullet : m_bullets)	{
+		if (m_mainCamera.IsInView(bullet.Transform().Rect()))
+			bullet.Draw(m_spriteBatch);
+	}
+
 	m_spriteBatch.End();
 
-	// Render the humans and zombies
+	// Render the humans, zombies and bullets
 	m_spriteBatch.Render();
 
 	m_shaderProgram.Unuse();

@@ -72,5 +72,9 @@ private:
 	// game state variables
 	GameState m_gameState;
 	int m_currentLevel;
+
+	// scoring variables
+	int m_nZombiesKilled;
+	int m_nCivsKilled;
 };
 

@@ -23,10 +23,10 @@ void Sprite::Draw(MyGameEngine::SpriteBatch& spriteBatch, glm::vec2 position, gl
 	}
 
 	glm::vec4 rect = glm::vec4(
-		position.x - dimensions.x,
-		position.y - dimensions.y,
-		dimensions.x * 2,
-		dimensions.y * 2
+		position.x - dimensions.x / 2.0f,
+		position.y - dimensions.y / 2.0f,
+		dimensions.x,
+		dimensions.y
 	);
 	glm::vec4 uv = glm::vec4(0, 0, 1, 1);
 

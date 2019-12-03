@@ -67,8 +67,7 @@ void Actor::CollideWithTile(glm::vec2 tilePos) {
 
 
 void Actor::Draw(MyGameEngine::SpriteBatch& spriteBatch) {
-	glm::vec2 dimensions{ m_transform.Radius(), m_transform.Radius() };
-	m_sprite.Draw(spriteBatch, m_transform.Position(), dimensions);
+	m_sprite.Draw(spriteBatch, m_transform.Position(), m_transform.Dimensions());
 }
 
 
@@ -82,6 +81,7 @@ glm::vec2 Actor::GetRandomDirection() {
 
 bool Actor::CollideWith(Actor* other) {
 
+	// can't collide with yourself
 	if (other == this) return false;
 
 	glm::vec2 relativePosition = m_transform.Position() - other->Transform().Position();
@@ -90,6 +90,11 @@ bool Actor::CollideWith(Actor* other) {
 		relativePosition = glm::vec2(1, 0);
 	}
 	float touchDistance = m_transform.Radius() + other->Transform().Radius();
+
+	// don't bother checking for collision if agents are far apart in x or y direction
+	if (relativePosition.x > touchDistance) return false;
+	if (relativePosition.y > touchDistance) return false;
+
 	float depth = touchDistance - glm::length(relativePosition);
 
 	if (depth > 0) {
