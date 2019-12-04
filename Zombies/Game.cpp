@@ -46,8 +46,11 @@ void Game::InitSystems() {
 
 	m_gameWindow.Create("Zombies", WIDTH, HEIGHT, 0);
 	m_mainCamera.Init(WIDTH, HEIGHT);
+	m_uiCamera.Init(WIDTH, HEIGHT);
 	InitShaders();
 	m_spriteBatch.Init();
+	m_uiSpriteBatch.Init();
+	m_pSpriteFont = new MyGameEngine::SpriteFont("Fonts/veteran_typewriter/veteran typewriter.ttf", 32);
 }
 
 
@@ -202,8 +205,8 @@ void Game::UpdateActors(float deltaTime) {
 	}
 
 	// Do collision for humans and zombies with terrain
-	for (auto pHuman : m_pHumans)	{ pHuman->DoLevelCollision(m_pLevels[m_currentLevel]->LevelData()); }
-	for (auto pZombie : m_pZombies) { pZombie->DoLevelCollision(m_pLevels[m_currentLevel]->LevelData()); }
+	for (auto pHuman : m_pHumans)	{ pHuman->DoLevelCollision(CurrentLevel()->LevelData()); }
+	for (auto pZombie : m_pZombies) { pZombie->DoLevelCollision(CurrentLevel()->LevelData()); }
 
 	// Do collision for humans with humans
 	for (size_t i = 0; i < m_pHumans.size(); i++) {
@@ -247,7 +250,7 @@ void Game::UpdateActors(float deltaTime) {
 		bool foundCollision = false;
 
 		// with terrain
-		if (m_bullets[i].CollideWithWorld(m_pLevels[m_currentLevel]->LevelData())) {
+		if (m_bullets[i].CollideWithWorld(CurrentLevel()->LevelData())) {
 			m_bullets[i] = m_bullets.back();
 			m_bullets.pop_back();
 			foundCollision = true;
@@ -284,6 +287,8 @@ void Game::UpdateActors(float deltaTime) {
 void Game::UpdateCamera() {
 	m_mainCamera.SetPosition(m_pPlayer->Transform().Position());
 	m_mainCamera.Update();
+
+	m_uiCamera.Update();
 }
 
 
@@ -325,11 +330,31 @@ void Game::DrawGame() {
 	// Render the humans, zombies and bullets
 	m_spriteBatch.Render();
 
-	m_shaderProgram.Unuse();
+	DrawHUD();
 
+	m_shaderProgram.Unuse();
 	m_gameWindow.Swap();
 }
 
 
+void Game::DrawHUD() {
+
+	GLint pLocation = m_shaderProgram.GetUniformLocation("P");
+	glm::mat4 cameraMatrix = m_uiCamera.CameraMatrix();
+	glUniformMatrix4fv(pLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
+
+	m_uiSpriteBatch.Begin();
+
+	char buffer[256];
+
+	sprintf_s(buffer, "Civilians Remaining: %d/%d",
+				m_pHumans.size() - 1, CurrentLevel()->NHumans());
+	m_pSpriteFont->draw(m_uiSpriteBatch, buffer, glm::vec2(395, 270),
+						glm::vec2(0.8f), 0.0f, MyGameEngine::Color(255, 255, 255, 255),
+						MyGameEngine::Justification::RIGHT);
+
+	m_uiSpriteBatch.End();
+	m_uiSpriteBatch.Render();
+}
 
 

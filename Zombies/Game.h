@@ -6,6 +6,7 @@
 #include <MyGameEngine/InputManager.h>
 #include <MyGameEngine/GLSLProgram.h>
 #include <MyGameEngine/SpriteBatch.h>
+#include <MyGameEngine/SpriteFont.h>
 #include <MyGameEngine/Window.h>
 
 #include "Level.h"
@@ -52,13 +53,17 @@ private:
 	// Render the game
 	void DrawGame();
 
-
+	// Draws the HUD
+	void DrawHUD();
 
 
 	MyGameEngine::Camera2D		m_mainCamera;
+	MyGameEngine::Camera2D		m_uiCamera;
 	MyGameEngine::GLSLProgram	m_shaderProgram;
 	MyGameEngine::InputManager	m_inputManager;
 	MyGameEngine::SpriteBatch	m_spriteBatch;
+	MyGameEngine::SpriteFont*	m_pSpriteFont;
+	MyGameEngine::SpriteBatch	m_uiSpriteBatch;
 	MyGameEngine::Window		m_gameWindow;
 
 	std::vector<Level*>			m_pLevels;			// data for all the levels in the game
@@ -72,6 +77,8 @@ private:
 	// game state variables
 	GameState m_gameState;
 	int m_currentLevel;
+
+	Level* CurrentLevel() { return m_pLevels[m_currentLevel]; }
 
 	// scoring variables
 	int m_nZombiesKilled;
