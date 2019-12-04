@@ -1,5 +1,5 @@
 #include "IOManager.h"
-#include "Errors.h"
+#include "MyErrors.h"
 
 #include <fstream>
 

@@ -30,10 +30,6 @@ void Player::Start(glm::vec2 position, MyGameEngine::InputManager* pInput, MyGam
 
 	m_pInput = pInput;
 	m_pCamera = pCamera;
-
-	AddGun(new Gun("Magnum",	 0.42f,  1,  2.5f, 1200.0f, 50));
-	AddGun(new Gun("Shotgun",	 0.75f, 10, 15.0f, 1200.0f, 15));
-	AddGun(new Gun("MP5",		 0.08f,  1,  5.0f, 1200.0f,  8));
 }
 
 

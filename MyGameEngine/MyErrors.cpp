@@ -1,4 +1,4 @@
-#include "Errors.h"
+#include "MyErrors.h"
 
 #include <cstdlib>
 #include <iostream>
@@ -8,9 +8,7 @@ namespace MyGameEngine {
 
 void FatalError(std::string errorString) {
 	std::cout << errorString << std::endl;
-	std::cout << "Press any key to quit . . .";
-	int tmp;
-	std::cin >> tmp;
+	system("pause");
 	SDL_Quit();
 	exit(1);
 }

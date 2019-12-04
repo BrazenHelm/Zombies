@@ -3,7 +3,7 @@
 #include <fstream>
 #include <iostream>
 
-#include <MyGameEngine/Errors.h>
+#include <MyGameEngine/MyErrors.h>
 #include <MyGameEngine/ResourceManager.h>
 
 

@@ -21,7 +21,7 @@ Modified By: Benjamin Arnold
 
 #pragma once
 
-#include <SDL_ttf/SDL_ttf.h>
+#include <SDL/SDL_ttf.h>
 #include <glm/glm.hpp>
 #include <map>
 #include <vector>

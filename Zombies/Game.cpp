@@ -32,6 +32,7 @@ Game::~Game() {
 void Game::Run() {
 	InitSystems();
 	LoadLevels();
+	PlayMusic();
 	GameLoop();
 	system("pause");
 }
@@ -44,6 +45,7 @@ void Game::InitSystems() {
 	const int WIDTH = 800;
 	const int HEIGHT = 600;
 
+	m_audioSource.init();
 	m_gameWindow.Create("Zombies", WIDTH, HEIGHT, 0);
 	m_mainCamera.Init(WIDTH, HEIGHT);
 	m_uiCamera.Init(WIDTH, HEIGHT);
@@ -66,6 +68,13 @@ void Game::SetUpLevel(int levelIndex) {
 	glm::vec2 playerStartPos = pLevel->PlayerStart();
 	m_pPlayer = new Player(playerStartPos, &m_inputManager, &m_mainCamera);
 	m_pHumans.push_back(m_pPlayer);
+
+	m_pPlayer->AddGun(new Gun("Magnum", 0.42f, 1, 2.5f, 1200.0f, 50,
+		m_audioSource.loadSound("Audio/shots/pistol.wav")));
+	m_pPlayer->AddGun(new Gun("Shotgun", 0.75f, 10, 15.0f, 1200.0f, 15,
+		m_audioSource.loadSound("Audio/shots/shotgun.wav")));
+	m_pPlayer->AddGun(new Gun("MP5", 0.08f, 1, 5.0f, 1200.0f, 8,
+		m_audioSource.loadSound("Audio/shots/cg1.wav")));
 	
 	// Create random humans
 	int nHumans = pLevel->NHumans();
@@ -94,6 +103,12 @@ void Game::InitShaders() {
 	m_shaderProgram.AddAttribute("vertexColor");
 	m_shaderProgram.AddAttribute("vertexUV");
 	m_shaderProgram.LinkShaders();
+}
+
+
+void Game::PlayMusic() {
+	MyGameEngine::Audio::Music music = m_audioSource.loadMusic("Audio/XYZ.ogg");
+	music.play(-1);
 }
 
 

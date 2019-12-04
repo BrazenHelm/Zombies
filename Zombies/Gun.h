@@ -1,5 +1,7 @@
 #pragma once
 
+#include <MyGameEngine/Audio.h>
+
 #include <glm/glm.hpp>
 #include <string>
 #include <vector>
@@ -10,7 +12,7 @@
 class Gun
 {
 public:
-	Gun(std::string name, float rateOfFire, int pellets, float spread, float speed, int damage);
+	Gun(std::string name, float rateOfFire, int pellets, float spread, float speed, int damage, MyGameEngine::Audio::SoundEffect sfx);
 	~Gun();
 
 	void Update(bool mouseHeld, const glm::vec2& pos, glm::vec2& dir, std::vector<Bullet>& bullets, float deltaTime);
@@ -26,5 +28,7 @@ private:
 	float m_spread;		//< in radians; pass in value in degrees
 	float m_speed;		//< bullet speed
 	int m_damage;		//< bullet damage
+
+	MyGameEngine::Audio::SoundEffect m_sfx;
 };
 

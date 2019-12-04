@@ -155,16 +155,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Audio.h" />
+    <ClInclude Include="AudioSource.h" />
     <ClInclude Include="Camera2D.h" />
-    <ClInclude Include="Errors.h" />
+    <ClInclude Include="MyErrors.h" />
     <ClInclude Include="GLSLProgram.h" />
     <ClInclude Include="GLTexture.h" />
     <ClInclude Include="ImageLoader.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="IOManager.h" />
+    <ClInclude Include="Music.h" />
     <ClInclude Include="MyGameEngine.h" />
     <ClInclude Include="PicoPNG.h" />
     <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="SoundEffect.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteBatch.h" />
     <ClInclude Include="SpriteFont.h" />
@@ -176,8 +180,10 @@
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AudioSource.cpp" />
     <ClCompile Include="Camera2D.cpp" />
-    <ClCompile Include="Errors.cpp" />
+    <ClCompile Include="Music.cpp" />
+    <ClCompile Include="MyErrors.cpp" />
     <ClCompile Include="GLSLProgram.cpp" />
     <ClCompile Include="ImageLoader.cpp" />
     <ClCompile Include="InputManager.cpp" />
@@ -185,6 +191,7 @@
     <ClCompile Include="MyGameEngine.cpp" />
     <ClCompile Include="PicoPNG.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="SoundEffect.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteBatch.cpp" />
     <ClCompile Include="SpriteFont.cpp" />

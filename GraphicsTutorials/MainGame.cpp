@@ -1,6 +1,6 @@
 #include "MainGame.h"
 
-#include <MyGameEngine/Errors.h>
+#include <MyGameEngine/MyErrors.h>
 #include <MyGameEngine/MyGameEngine.h>
 #include <MyGameEngine/ResourceManager.h>
 #include <MyGameEngine/Time.h>

@@ -1,6 +1,6 @@
 #include "Window.h"
 
-#include "Errors.h"
+#include "MyErrors.h"
 
 namespace MyGameEngine {
 
