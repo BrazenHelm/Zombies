@@ -17,6 +17,12 @@ AudioSource::~AudioSource()
 
 
 void AudioSource::init() {
+
+	if (m_isInit) {
+		std::cout << "MyGameEngine::Audio::AudioSource::init() : AudioSource already initialised." << std::endl;
+		return;
+	}
+
 	// Parameters determine the file types that can be read
 	if (Mix_Init(MIX_INIT_MP3 | MIX_INIT_OGG) == -1) {
 		FatalError("Mix_Init error: " + std::string(Mix_GetError()));
@@ -30,10 +36,21 @@ void AudioSource::init() {
 
 
 void AudioSource::destroy() {
-	if (m_isInit) {
-		m_isInit = false;
-		Mix_Quit();
+
+	if (!m_isInit) {
+		std::cout << "MyGameEngine::Audio::AudioSource::destroy() : cannot destroy AudioSource that has not been initialised." << std::endl;
+		return;
 	}
+
+	m_isInit = false;
+
+	for (auto kvp : m_musicCache) { Mix_FreeMusic(kvp.second); }
+	for (auto kvp : m_soundCache) { Mix_FreeChunk(kvp.second); }
+	m_musicCache.clear();
+	m_soundCache.clear();
+
+	Mix_CloseAudio();
+	Mix_Quit();
 }
 
 
