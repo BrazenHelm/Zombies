@@ -40,6 +40,13 @@ void Game::Run() {
 }
 
 
+void updateBloodParticle(MyGameEngine::Particle2D& p, float deltaTime) {
+	p.position += p.velocity * deltaTime;
+	p.color.a = (GLubyte)(p.lifetime * 1275.0f);
+	p.lifetime -= deltaTime;
+}
+
+
 void Game::InitSystems() {
 
 	MyGameEngine::Init();
@@ -55,7 +62,15 @@ void Game::InitSystems() {
 	m_spriteBatch.Init();
 	m_uiSpriteBatch.Init();
 	m_pSpriteFont = new MyGameEngine::SpriteFont("Fonts/veteran_typewriter/veteran typewriter.ttf", 32);
-	m_pBloodParticleBatch = new MyGameEngine::ParticleBatch2D(1000, 0.2f, MyGameEngine::ResourceManager::GetTexture("Textures/Pixel Adventure 1/Other/Dust Particle.png"));
+	m_pBloodParticleBatch = new MyGameEngine::ParticleBatch2D(
+		1000, 0.2f,
+		MyGameEngine::ResourceManager::GetTexture("Textures/Pixel Adventure 1/Other/Dust Particle.png"),
+		[](MyGameEngine::Particle2D& p, float deltaTime) {
+			p.position += p.velocity * deltaTime;
+			p.color.a = (GLubyte)(p.lifetime * 1275.0f);
+			p.lifetime -= deltaTime;
+		}
+	);
 	m_particleSystem.addParticleBatch(m_pBloodParticleBatch);
 }
 

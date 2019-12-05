@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include "GLTexture.h"
 #include <glm/glm.hpp>
 #include "SpriteBatch.h"
@@ -9,9 +10,8 @@ namespace MyGameEngine {
 
 class Particle2D
 {
-	friend class ParticleBatch2D;
-
 public:
+
 	Particle2D() = default;
 	~Particle2D() = default;
 
@@ -19,10 +19,6 @@ public:
 		const Color& color, float size) :
 		position(position), velocity(velocity), color(color), size(size) {
 	}
-
-
-private:
-	void update(float deltaTime);
 
 	glm::vec2	position = glm::vec2(0.0f);
 	glm::vec2	velocity = glm::vec2(0.0f);
@@ -37,13 +33,20 @@ private:
 };
 
 
+inline void defaultParticleUpdate(Particle2D& particle, float deltaTime) {
+	particle.position += particle.velocity * deltaTime;
+	particle.lifetime -= deltaTime;
+}
+
+
 class ParticleBatch2D
 {
 public:
-	ParticleBatch2D(int maxParticles, float particleLifetime, GLTexture texture) :
+	ParticleBatch2D(int maxParticles, float particleLifetime, GLTexture texture, std::function<void(Particle2D&, float)> updateFunction = defaultParticleUpdate) :
 		m_maxParticles(maxParticles),
 		m_particleLifetime(particleLifetime),
-		m_particleTexture(texture) {
+		m_particleTexture(texture),
+		m_updateFunction(updateFunction) {
 		m_particles = new Particle2D[maxParticles];
 	}
 	~ParticleBatch2D() { delete[] m_particles; }
@@ -63,6 +66,8 @@ private:
 
 	float		m_particleLifetime = 0.0f;
 	GLTexture	m_particleTexture;
+
+	std::function<void(Particle2D&, float)> m_updateFunction;
 };
 
 }

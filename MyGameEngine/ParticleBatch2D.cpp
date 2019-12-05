@@ -3,10 +3,7 @@
 namespace MyGameEngine {
 
 
-void Particle2D::update(float deltaTime) {
-	position += velocity * deltaTime;
-	lifetime -= deltaTime;
-}
+
 
 
 void ParticleBatch2D::addParticle(const glm::vec2& position, const glm::vec2& velocity,
@@ -22,7 +19,7 @@ void ParticleBatch2D::addParticle(const glm::vec2& position, const glm::vec2& ve
 void ParticleBatch2D::update(float deltaTime) {
 	for (int i = 0; i < m_maxParticles; i++) {
 		if (m_particles[i].isActive()) {
-			m_particles[i].update(deltaTime);
+			m_updateFunction(m_particles[i], deltaTime);
 		}
 	}
 }
