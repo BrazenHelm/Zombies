@@ -7,8 +7,8 @@ Bullet::Bullet(glm::vec2 pos, glm::vec2 dir, int damage, int speed) :
 	m_transform(pos), m_damage(damage) {
 	m_transform.MoveInDirection(dir, (float)speed);
 
-	MyGameEngine::Color red (128, 0, 0, 255);
-	m_sprite.Init(BULLET_TEXTURE_PATH, red);
+	MyGameEngine::Color blue(0, 0, 128, 255);
+	m_sprite.Init(BULLET_TEXTURE_PATH, blue);
 }
 
 

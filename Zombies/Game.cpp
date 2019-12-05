@@ -4,7 +4,9 @@
 #include <MyGameEngine/GLTexture.h>
 #include <MyGameEngine/ResourceManager.h>
 #include <MyGameEngine/Time.h>
+#include <MyGameEngine/ParticleBatch2D.h>
 
+#include <glm/gtx/rotate_vector.hpp>
 #include <SDL/SDL.h>
 
 #include <ctime>
@@ -53,6 +55,8 @@ void Game::InitSystems() {
 	m_spriteBatch.Init();
 	m_uiSpriteBatch.Init();
 	m_pSpriteFont = new MyGameEngine::SpriteFont("Fonts/veteran_typewriter/veteran typewriter.ttf", 32);
+	m_pBloodParticleBatch = new MyGameEngine::ParticleBatch2D(1000, 0.2f, MyGameEngine::ResourceManager::GetTexture("Textures/Pixel Adventure 1/Other/Dust Particle.png"));
+	m_particleSystem.addParticleBatch(m_pBloodParticleBatch);
 }
 
 
@@ -131,9 +135,12 @@ void Game::GameLoop() {
 		// TODO: multiple physics steps at high frame rates
 
 		ProcessInput();
+
 		UpdateActors(deltaTime);
 		UpdateCamera();
 		m_inputManager.Update();
+		m_particleSystem.update(deltaTime);
+
 		DrawGame();
 
 		fpsLimiter.EndFrame();
@@ -197,6 +204,7 @@ void Game::UpdateActors(float deltaTime) {
 	}
 	for (size_t i = 1; i < m_pHumans.size(); i++) {
 		if (m_pHumans[i]->Update(m_pHumans, m_pZombies, deltaTime)) {
+			AddBlood(m_pHumans[i]->Transform().Position(), 20);
 			delete m_pHumans[i];
 			m_pHumans[i] = m_pHumans.back();
 			m_pHumans.pop_back();
@@ -205,6 +213,7 @@ void Game::UpdateActors(float deltaTime) {
 	}
 	for (size_t j = 0; j < m_pZombies.size(); j++) {
 		if (m_pZombies[j]->Update(m_pHumans, m_pZombies, deltaTime)) {
+			AddBlood(m_pZombies[j]->Transform().Position(), 20);
 			delete m_pZombies[j];
 			m_pZombies[j] = m_pZombies.back();
 			m_pZombies.pop_back();
@@ -246,6 +255,7 @@ void Game::UpdateActors(float deltaTime) {
 	for (size_t i = 0; i < m_pZombies.size(); i++) {
 		for (size_t j = m_pHumans.size() - 1; j > 0; j--) {
 			if (m_pZombies[i]->CollideWith(m_pHumans[j])) {
+				AddBlood(m_pHumans[j]->Transform().Position(), 20);
 				Zombie* newZombie = new Zombie(m_pHumans[j]->Transform().Position());
 				delete m_pHumans[j];
 				m_pHumans[j] = m_pHumans.back();
@@ -275,6 +285,7 @@ void Game::UpdateActors(float deltaTime) {
 		// with humans (not the player)
 		for (size_t j = 1; j < m_pHumans.size(); j++) {
 			if (m_bullets[i].CollideWith(m_pHumans[j])) {
+				AddBlood(m_bullets[i].Transform().Position(), 5);
 				m_bullets[i] = m_bullets.back();
 				m_bullets.pop_back();
 				foundCollision = true;
@@ -286,6 +297,7 @@ void Game::UpdateActors(float deltaTime) {
 		// with zombies
 		for (size_t k = 0; k < m_pZombies.size(); k++) {
 			if (m_bullets[i].CollideWith(m_pZombies[k])) {
+				AddBlood(m_bullets[i].Transform().Position(), 5);
 				m_bullets[i] = m_bullets.back();
 				m_bullets.pop_back();
 				foundCollision = true;
@@ -307,6 +319,23 @@ void Game::UpdateCamera() {
 }
 
 
+void Game::AddBlood(const glm::vec2& pos, int n_particles) {
+
+	glm::vec2 vel(100.0f, 0.0f);
+
+	static std::mt19937 rng(time(nullptr));
+	static std::uniform_real_distribution<float> randomAngle(0.0f, 2 * M_PI);
+
+	MyGameEngine::Color red(200, 0, 0, 255);
+
+	for (int i = 0; i < n_particles; i++) {
+		vel = glm::rotate(vel, randomAngle(rng));
+		m_pBloodParticleBatch->addParticle(pos, vel, red, 5.0f);
+	}
+
+}
+
+
 void Game::DrawGame() {
 
 	glClearDepth(1.0f);
@@ -324,9 +353,22 @@ void Game::DrawGame() {
 	// Render the level
 	m_pLevels[m_currentLevel]->Render();
 
-	// Draw humans, zombies and bullets
 	m_spriteBatch.Begin();
 
+	DrawActors();
+	m_pBloodParticleBatch->draw(m_spriteBatch);
+
+	m_spriteBatch.End();
+	m_spriteBatch.Render();
+
+	DrawHUD();
+
+	m_shaderProgram.Unuse();
+	m_gameWindow.Swap();
+}
+
+
+void Game::DrawActors() {
 	for (Actor* pHuman : m_pHumans) {
 		if (m_mainCamera.IsInView(pHuman->Transform().Rect()))
 			pHuman->Draw(m_spriteBatch);
@@ -335,20 +377,10 @@ void Game::DrawGame() {
 		if (m_mainCamera.IsInView(pZombie->Transform().Rect()))
 			pZombie->Draw(m_spriteBatch);
 	}
-	for (Bullet bullet : m_bullets)	{
+	for (Bullet bullet : m_bullets) {
 		if (m_mainCamera.IsInView(bullet.Transform().Rect()))
 			bullet.Draw(m_spriteBatch);
 	}
-
-	m_spriteBatch.End();
-
-	// Render the humans, zombies and bullets
-	m_spriteBatch.Render();
-
-	DrawHUD();
-
-	m_shaderProgram.Unuse();
-	m_gameWindow.Swap();
 }
 
 

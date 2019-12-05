@@ -9,6 +9,7 @@
 #include <MyGameEngine/SpriteBatch.h>
 #include <MyGameEngine/SpriteFont.h>
 #include <MyGameEngine/Window.h>
+#include <MyGameEngine/ParticleSystem2D.h>
 
 #include "Level.h"
 #include "Player.h"
@@ -54,23 +55,27 @@ private:
 	// Update the camera to follow the player
 	void UpdateCamera();
 
+	// Blood splatter
+	void AddBlood(const glm::vec2& pos, int n_particles);
+
 	// Render the game
 	void DrawGame();
-
-	// Draws the HUD
+	void DrawActors();
 	void DrawHUD();
 
 
 	MyGameEngine::Audio::AudioSource m_audioSource;
 
-	MyGameEngine::Camera2D		m_mainCamera;
-	MyGameEngine::Camera2D		m_uiCamera;
-	MyGameEngine::GLSLProgram	m_shaderProgram;
-	MyGameEngine::InputManager	m_inputManager;
-	MyGameEngine::SpriteBatch	m_spriteBatch;
-	MyGameEngine::SpriteFont*	m_pSpriteFont;
-	MyGameEngine::SpriteBatch	m_uiSpriteBatch;
-	MyGameEngine::Window		m_gameWindow;
+	MyGameEngine::Camera2D			m_mainCamera;
+	MyGameEngine::Camera2D			m_uiCamera;
+	MyGameEngine::GLSLProgram		m_shaderProgram;
+	MyGameEngine::InputManager		m_inputManager;
+	MyGameEngine::ParticleSystem2D	m_particleSystem;
+	MyGameEngine::ParticleBatch2D*	m_pBloodParticleBatch;
+	MyGameEngine::SpriteBatch		m_spriteBatch;
+	MyGameEngine::SpriteFont*		m_pSpriteFont;
+	MyGameEngine::SpriteBatch		m_uiSpriteBatch;
+	MyGameEngine::Window			m_gameWindow;
 
 	std::vector<Level*>			m_pLevels;			// data for all the levels in the game
 

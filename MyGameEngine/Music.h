@@ -14,8 +14,10 @@ public:
 	Music();
 	~Music();
 
-	// Plays the music file
-	// @param loops: if loops is -1 loop indefinitely, otherwise play loops times
+	/**
+	* Plays the music file
+	* param loops: the number of times to loop. -1 loops indefinitely
+	*/
 	void play(int loops = 1);
 
 	static void stop();
