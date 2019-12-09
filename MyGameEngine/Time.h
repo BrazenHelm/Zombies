@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SDL/SDL.h>
+
 namespace MyGameEngine {
 
 class Time
@@ -21,8 +23,8 @@ private:
 	float m_maxFPS;
 	float m_FPS;
 
-	unsigned int m_startTime;
-	unsigned int m_prevStartTime;
+	Uint32 m_startTime;
+	Uint32 m_prevStartTime;
 
 	void CalculateFPS(unsigned int frameTicks);
 };

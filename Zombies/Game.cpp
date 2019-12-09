@@ -339,8 +339,8 @@ void Game::AddBlood(const glm::vec2& pos, int n_particles) {
 
 	glm::vec2 vel(100.0f, 0.0f);
 
-	static std::mt19937 rng(time(nullptr));
-	static std::uniform_real_distribution<float> randomAngle(0.0f, 2 * M_PI);
+	static std::mt19937 rng(static_cast<unsigned>(time(nullptr)));
+	static std::uniform_real_distribution<float> randomAngle(0.0f, 2.0f * static_cast<float>(std::_Pi));
 
 	MyGameEngine::Color red(200, 0, 0, 255);
 

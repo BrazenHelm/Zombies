@@ -1,7 +1,5 @@
 #include "Time.h"
 
-#include <SDL/SDL.h>
-
 #include <numeric>
 #include <vector>
 
@@ -26,9 +24,9 @@ void Time::BeginFrame() {
 }
 
 void Time::EndFrame() {
-	unsigned int frameTime = SDL_GetTicks() - m_startTime;
+	Uint32 frameTime = SDL_GetTicks() - m_startTime;
 
-	if (1000 / m_maxFPS > frameTime) {
+	if (static_cast<Uint32>(1000 / m_maxFPS) > frameTime) {
 		SDL_Delay(1000 / m_maxFPS - frameTime);
 	}
 

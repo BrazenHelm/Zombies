@@ -3,9 +3,9 @@
 
 #include "Level.h"
 
-Bullet::Bullet(glm::vec2 pos, glm::vec2 dir, int damage, int speed) :
+Bullet::Bullet(glm::vec2 pos, glm::vec2 dir, int damage, float speed) :
 	m_transform(pos), m_damage(damage) {
-	m_transform.MoveInDirection(dir, (float)speed);
+	m_transform.MoveInDirection(dir, speed);
 
 	MyGameEngine::Color blue(0, 0, 128, 255);
 	m_sprite.Init(BULLET_TEXTURE_PATH, blue);

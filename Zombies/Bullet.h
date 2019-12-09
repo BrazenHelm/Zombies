@@ -11,7 +11,7 @@
 class Bullet
 {
 public:
-	Bullet(glm::vec2 pos, glm::vec2 dir, int damage, int speed);
+	Bullet(glm::vec2 pos, glm::vec2 dir, int damage, float speed);
 	~Bullet();
 
 	void Update(float deltaTime);
