@@ -19,7 +19,7 @@ public:
 
 	void PressKey(unsigned int keyID);
 	void ReleaseKey(unsigned int keyID);
-	void SetMousePosition(float x, float y);
+	void SetMousePosition(int x, int y);
 
 	// Should be called every frame
 	void Update();

@@ -28,7 +28,7 @@ void InputManager::ReleaseKey(unsigned int keyID) {
 }
 
 
-void InputManager::SetMousePosition(float x, float y) {
+void InputManager::SetMousePosition(int x, int y) {
 	m_mousePos.x = x;
 	m_mousePos.y = y;
 }

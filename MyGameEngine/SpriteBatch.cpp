@@ -121,7 +121,7 @@ void SpriteBatch::Draw(const glm::vec4& rect, const glm::vec4& uv, GLuint textur
 
 void SpriteBatch::Render() {
 	glBindVertexArray(m_vaoID);
-	for (int i = 0; i < m_renderBatches.size(); ++i) {
+	for (size_t i = 0; i < m_renderBatches.size(); ++i) {
 		glBindTexture(GL_TEXTURE_2D, m_renderBatches[i].Texture());
 		glDrawArrays(GL_QUADS, m_renderBatches[i].Offset(), m_renderBatches[i].Size());
 	}
