@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 
 #include <MyGameEngine/Audio.h>
 #include <MyGameEngine/Camera2D.h>
@@ -94,5 +95,6 @@ private:
 	// scoring variables
 	int m_nZombiesKilled = 0;
 	int m_nCivsKilled = 0;
+	std::string score();
 };
 

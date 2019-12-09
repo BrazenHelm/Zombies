@@ -29,6 +29,10 @@ public:
 
 	Glyph() { }
 	Glyph(const glm::vec4& rect, const glm::vec4& uv, GLuint texture, float depth, const Color& color);
+	Glyph(const glm::vec4& rect, const glm::vec4& uv, GLuint texture, float depth, const Color& color, float angle);
+
+private:
+	glm::vec2 rotatePoint(const glm::vec2& point, float angle);
 };
 
 
@@ -71,7 +75,9 @@ public:
 	void Init();
 	void Begin(GlyphSortType sortType = GlyphSortType::TEXTURE);
 	void End();
-	void Draw(const glm::vec4& destRect, const glm::vec4& uvRect, GLuint texture, float depth, const Color& color);
+	void Draw(const glm::vec4& rect, const glm::vec4& uv, GLuint texture, float depth, const Color& color);
+	void Draw(const glm::vec4& rect, const glm::vec4& uv, GLuint texture, float depth, const Color& color, float angle);
+	void Draw(const glm::vec4& rect, const glm::vec4& uv, GLuint texture, float depth, const Color& color, const glm::vec2& dir);
 	void Render();
 
 private:

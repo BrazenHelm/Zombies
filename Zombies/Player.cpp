@@ -71,6 +71,13 @@ bool Player::Update(std::vector<Actor*>& humans, std::vector<Actor*>& zombies, s
 }
 
 
+void Player::Draw(MyGameEngine::SpriteBatch& spriteBatch) {
+	glm::vec2 mousePos = m_pCamera->ScreenToWorldPosition(m_pInput->MousePosition());
+	glm::vec2 mouseDir = glm::normalize(mousePos - m_transform.Position());
+	m_sprite.Draw(spriteBatch, m_transform.Position(), m_transform.Dimensions(), mouseDir);
+}
+
+
 void Player::AddGun(Gun* pGun) {
 	m_pGuns.push_back(pGun);
 	if (m_equippedGun == -1) m_equippedGun = 0;

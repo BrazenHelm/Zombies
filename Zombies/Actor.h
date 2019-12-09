@@ -23,7 +23,8 @@ public:
 			void DoLevelCollision(const std::vector<std::string>& levelData);
 			bool CollideWith(Actor* other);
 private:	void CollideWithTile(glm::vec2 tilePos);
-public:		void Draw(MyGameEngine::SpriteBatch& spriteBatch);
+public:		
+	virtual void Draw(MyGameEngine::SpriteBatch& spriteBatch);
 
 			void TakeDamage(int damage) { m_hp -= damage; }
 

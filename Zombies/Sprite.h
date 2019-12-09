@@ -14,10 +14,11 @@ public:
 	void Init(const std::string& path, const MyGameEngine::Color& color);
 
 	void Draw(MyGameEngine::SpriteBatch& spriteBatch, glm::vec2 position, glm::vec2 size);
+	void Draw(MyGameEngine::SpriteBatch& spriteBatch, glm::vec2 position, glm::vec2 size, glm::vec2 dir);
 
 private:
-	MyGameEngine::GLTexture		m_texture;
-	MyGameEngine::Color			m_color;
+	GLuint					m_textureID;
+	MyGameEngine::Color		m_color;
 
 	bool m_isInit;
 };

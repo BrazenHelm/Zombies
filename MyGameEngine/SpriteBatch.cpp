@@ -26,6 +26,48 @@ Glyph::Glyph(const glm::vec4& rect, const glm::vec4& uv, GLuint texture, float d
 }
 
 
+Glyph::Glyph(const glm::vec4& rect, const glm::vec4& uv, GLuint texture, float depth, const Color& color, float angle) : 
+	texture(texture), depth(depth)
+{
+	glm::vec2 halfDimensions(rect[2] / 2, rect[3] / 2);
+
+	glm::vec2 bl(-halfDimensions.x,  halfDimensions.y);
+	glm::vec2 br( halfDimensions.x,  halfDimensions.y);
+	glm::vec2 tl(-halfDimensions.x, -halfDimensions.y);
+	glm::vec2 tr( halfDimensions.x, -halfDimensions.y);
+
+	bl = rotatePoint(bl, angle) + halfDimensions;
+	br = rotatePoint(br, angle) + halfDimensions;
+	tl = rotatePoint(tl, angle) + halfDimensions;
+	tr = rotatePoint(tr, angle) + halfDimensions;
+
+	v00.SetPosition(rect[0] + bl.x, rect[1] + bl.y);
+	v00.color = color;
+	v00.SetUV(uv[0], uv[1]);
+
+	v01.SetPosition(rect[0] + br.x, rect[1] + br.y);
+	v01.color = color;
+	v01.SetUV(uv[0], uv[1] + uv[3]);
+
+	v10.SetPosition(rect[0] + tl.x, rect[1] + tl.y);
+	v10.color = color;
+	v10.SetUV(uv[0] + uv[2], uv[1]);
+
+	v11.SetPosition(rect[0] + tr.x, rect[1] + tr.y);
+	v11.color = color;
+	v11.SetUV(uv[0] + uv[2], uv[1] + uv[3]);
+}
+
+
+glm::vec2 Glyph::rotatePoint(const glm::vec2& point, float angle) {
+	glm::vec2 result(
+		point.x * cos(angle) - point.y * sin(angle),
+		point.x * sin(angle) + point.y * cos(angle)
+	);
+	return result;
+}
+
+
 SpriteBatch::SpriteBatch() :
 	m_vboID(0), m_vaoID(0) {
 }
@@ -61,6 +103,19 @@ void SpriteBatch::End() {
 
 void SpriteBatch::Draw(const glm::vec4& rect, const glm::vec4& uv, GLuint texture, float depth, const Color& color) {
 	m_glyphs.emplace_back(rect, uv, texture, depth, color);
+}
+
+
+void SpriteBatch::Draw(const glm::vec4& rect, const glm::vec4& uv, GLuint texture, float depth, const Color& color, float angle) {
+	m_glyphs.emplace_back(rect, uv, texture, depth, color, angle);
+}
+
+
+void SpriteBatch::Draw(const glm::vec4& rect, const glm::vec4& uv, GLuint texture, float depth, const Color& color, const glm::vec2& dir) {
+	const glm::vec2 down(0.0f, -1.0f);
+	float angle = acos(glm::dot(dir, down) / glm::length(dir));
+	if (dir.x < 0) angle *= -1;
+	m_glyphs.emplace_back(rect, uv, texture, depth, color, angle);
 }
 
 

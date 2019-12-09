@@ -16,6 +16,8 @@ public:
 	void Start(glm::vec2 position, MyGameEngine::InputManager* pInput, MyGameEngine::Camera2D* pCamera);
 	bool Update(std::vector<Actor*>& humans, std::vector<Actor*>& zombies, std::vector<Bullet>& bullets, float deltaTime);
 
+	void Draw(MyGameEngine::SpriteBatch& spriteBatch) override;
+
 	void AddGun(Gun* pGun);
 
 protected:

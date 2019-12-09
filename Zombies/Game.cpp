@@ -235,6 +235,7 @@ void Game::UpdateActors(float deltaTime) {
 			m_nZombiesKilled++;
 			if (m_pZombies.size() == 0) {
 				std::printf("*** All zombies defeated! ***\n");
+				std::printf("Your score is: %s\n", score().c_str());
 				std::printf("Zombies killed: %d\n", m_nZombiesKilled);
 				std::printf("Civilians killed: %d\n", m_nCivsKilled);
 				std::printf("Civilians saved: %d/%d\n", m_pHumans.size() - 1, m_pLevels[m_currentLevel]->NHumans());
@@ -420,3 +421,46 @@ void Game::DrawHUD() {
 }
 
 
+std::string Game::score() {
+	int nCivsSaved = m_pHumans.size() - 1;
+	int nCivsTotal = CurrentLevel()->NHumans();
+
+	float proportionCivsSaved = (float)nCivsSaved / nCivsTotal;
+	float proportionCivsKilled = (float)m_nCivsKilled / nCivsTotal;
+
+	int fameRank = 0, infamyRank = 0;
+
+	if (proportionCivsSaved >= 0.25f) fameRank = 1;
+	if (proportionCivsSaved >= 0.50f) fameRank = 2;
+	if (proportionCivsSaved >= 0.75f) fameRank = 3;
+
+	if (proportionCivsKilled > 0.00f) infamyRank = 1;
+	if (proportionCivsKilled >= 0.10f) infamyRank = 2;
+	if (proportionCivsKilled >= 0.25f) infamyRank = 3;
+
+	if (infamyRank == 0) {
+		if (fameRank == 0) return "Helpless";
+		if (fameRank == 1) return "Survivor";
+		if (fameRank == 2) return "Saviour";
+		if (fameRank == 3) return "Hero of the Apocalypse";
+	}
+	if (infamyRank == 1) {
+		if (fameRank == 0) return "Selfish";
+		if (fameRank == 1) return "Ruthless Survivor";
+		if (fameRank == 2) return "Careless Saviour";
+		if (fameRank == 3) return "Careless Hero";
+	}
+	if (infamyRank == 2) {
+		if (fameRank == 0) return "Callous";
+		if (fameRank == 1) return "Callous Survivor";
+		if (fameRank == 2) return "Unpredictable";
+		if (fameRank == 3) return "Dark Hero";
+	}
+	if (infamyRank == 3) {
+		if (fameRank == 0) return "Merciless";
+		if (fameRank == 1) return "Raider";
+		if (fameRank == 2) return "Raider King";
+		if (fameRank == 3) return "Raider King";
+	}
+	return "Error : no score found";
+}

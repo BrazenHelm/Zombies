@@ -67,7 +67,7 @@ void Actor::CollideWithTile(glm::vec2 tilePos) {
 
 
 void Actor::Draw(MyGameEngine::SpriteBatch& spriteBatch) {
-	m_sprite.Draw(spriteBatch, m_transform.Position(), m_transform.Dimensions());
+	m_sprite.Draw(spriteBatch, m_transform.Position(), m_transform.Dimensions(), m_transform.Direction());
 }
 
 
